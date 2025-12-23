@@ -1,0 +1,19 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "emulicious-debugger",
+            "request": "launch",
+            "preLaunchTask": "gbdk linker Test_1",
+            "name": "Test_1 GB",
+            "program": "D:/workspace-gameboy/workspace-final-2/main_1.gb",
+            "port": 1000,
+            "stopOnEntry": true
+        }
+    ]
+
+    
+}

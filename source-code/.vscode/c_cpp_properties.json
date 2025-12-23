@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "GameBoy Test_1",
+            "includePath": [
+                "D:/workspace-gameboy/workspace-final-2/**",
+                "D:/workspaces/workspaceGameBoy/gbdk-2020/include/**",
+                "D:/workspaces/workspaceGameBoy/gbdk-2020/include"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+}

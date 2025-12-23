@@ -1,0 +1,1 @@
+D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -o D:\workspace-gameboy\workspace-final-
