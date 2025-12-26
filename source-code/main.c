@@ -1,8 +1,11 @@
 #include <gb/gb.h>
 #include <stdio.h>
+#include <gb/hardware.h>
 
 #include "splash.h"
 #include "game.h"
+
+
 
 //DELAY
 void performantdelay(UINT8 numloop) {
@@ -52,7 +55,6 @@ void fadein(){
    }
 }
 
-
 //MAIN
 void main(){
    processSplash();
@@ -60,3 +62,21 @@ void main(){
    fadein(); 
    run();
 }
+
+
+/*
+void send(char c) {
+    SB_REG = c;
+    SC_REG = 0x81;
+    while(SC_REG & 0x80);
+}
+
+void main(void) {
+
+    // Espera 2 segundos
+    for(uint16_t i=0;i<120;i++) wait_vbl_done();
+
+    send('O'); send('K'); send('\n');
+
+    while(1) wait_vbl_done();
+}*/

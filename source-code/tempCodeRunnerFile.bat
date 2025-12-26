@@ -1,1 +1,2 @@
-D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -o D:\workspace-gameboy\workspace-final-
+call D:\workspace-gameboy\workspace-final-2\make.bat
+D:\workspaces\workspaceGameBoy\gbdk\emu\bgb.exe D:\workspace-gameboy\workspace-final-2\main_1.gb

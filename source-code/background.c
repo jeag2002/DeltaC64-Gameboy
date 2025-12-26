@@ -17,9 +17,8 @@
 #define TILE_STAR3   243  // pequeño brillante
 #define TILE_STAR4   244  // grande tenue
 #define TILE_STAR5   245  // grande medio
-#define TILE_STAR6   246  // grande brillante
 #define STAR_COUNT   6    // cantidad total de variantes
-#define NUM_STARS    12
+#define NUM_STARS    8
 
 unsigned char *background_map_1;
 
@@ -46,10 +45,6 @@ const unsigned char sky_tiles[] = {
 
     // --- TILE 245: grande media ---
     0xFF,0xEF,0xEF,0xC3,0xC3,0xEF,0xEF,0xFF,
-    0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,
-
-    // --- TILE 246: grande brillante (explosiva) ---
-    0xFF,0xEF,0xC3,0x81,0x81,0xC3,0xEF,0xFF,
     0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,0xFF
 };
 

@@ -13,10 +13,12 @@ void run() {
     BYTE BOOM = FALSE;
 
 
-    //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && END); i++) {
-    launchLevel(LEVEL_1_IDX);
-    setCollisionBoundaries(LEVEL_1_IDX);
     setupPlayer();
+
+    //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END); i++) {
+    launchLevel(LEVEL_1_IDX);
+    loadElementsForLevel(LEVEL_1_IDX);
+    
     
     int score = 1;
 
@@ -38,9 +40,8 @@ void run() {
         BYTE END_LEVEL = stepLevel();
         
         //MOVE PLAYER
-        BOOM = movePlayer(getWorldScroll());
+        BOOM = processPlayer(getWorldScroll());
         END  = END_LEVEL || BOOM;
-
     }
     //}
     

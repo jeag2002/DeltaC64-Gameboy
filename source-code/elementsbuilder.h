@@ -7,16 +7,16 @@
 
 
 //SET 
-void setCollisionBoundaries(int level);
+void loadElementsForLevel(int level);
 //MOVE BUTTON PLAYER
-BYTE movePlayer(UINT16 scroll_x);
+BYTE processPlayer(UINT16 scroll_x);
 //TILES ELEMENT
 void setTilesElement(ElementType *element);
 //MOVE ELEMENT
 void moveElement(ElementType *element);
-//MOVE PLAYER
+//TILES PLAYER ARRANGEMENT
 void moveTilePlayer();
-//MOVE SHIP
+//CREATE PLAYER
 void setupPlayer();
 //GET ELEMENT BY ID
 ElementType *getElement(UINT8 index);

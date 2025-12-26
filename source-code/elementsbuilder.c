@@ -1,7 +1,8 @@
 #include "elementsbuilder.h"
-#include "level_1.h"
 #include "global.h"
 #include "world.h"
+#include "collisions.h"
+#include "emuprintf.h"
 #include <stdio.h>
 
 
@@ -9,10 +10,10 @@ ElementType elements[NUMELEMENTS];
 unsigned char *background_map_2;
 
 
-void setCollisionBoundaries(int level) {
+void loadElementsForLevel(int level) {
     background_map_2 = getLevelFromIndex(level);
+    setCollBoundaries(level);
 }
-
 
 //MOVE SHIP
 void moveElement(ElementType *element) {
@@ -70,12 +71,12 @@ void setupPlayer() {
 
    elements[PLAYER_ID].disabled = FALSE;
 
-   elements[PLAYER_ID].x = 80;
-   elements[PLAYER_ID].y = 80;
+   elements[PLAYER_ID].x = PLAYER_POS_X_INI;
+   elements[PLAYER_ID].y = PLAYER_POS_Y_INI;
    elements[PLAYER_ID].x_world = elements[PLAYER_ID].x; 
 
-   elements[PLAYER_ID].width = 16;
-   elements[PLAYER_ID].height = 16;
+   elements[PLAYER_ID].width = ELEMENT_WIDTH;
+   elements[PLAYER_ID].height = ELEMENT_HEIGHT;
    elements[PLAYER_ID].inc = INC_PLAYER;
 
    elements[PLAYER_ID].lives = LIVES_PLAYER;
@@ -124,6 +125,8 @@ ElementType *getElement(UINT8 index) {
 }
 
 
+
+/*
 UBYTE isCollision(UINT16 elem_1_x, UINT16 elem_1_y, UINT16 wall_x, UINT16 wall_y) {
     return (elem_1_x >= wall_x && elem_1_x <= wall_x + 16) 
     && (elem_1_y >= wall_y && elem_1_y <= wall_y +  16) 
@@ -155,23 +158,9 @@ UINT8 get_tile_at_world(UINT16 world_x, UINT16 world_y) {
     //return background_map_levelone[wy * MAP_WIDTH_TILE + wx];
 }
 
-void numberToTilesXY(UINT16 value, unsigned char* dest, UINT8 digits) {
-    for (INT8 i = digits - 1; i >= 0; i--) {
-        dest[i] = (value % 10) + 1;
-        value /= 10;
-    }
-}
-
 BYTE down_collision(UINT16 world_x, UINT16 world_y) {
 
     return FALSE;
-
-    //const UINT8 inset = 1;
-    /*
-    unsigned char hud_line[20] = {
-    0x0E,0x19,0x00,0x00,0x00,0x00,0x00,0x00, 
-    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,            
-    0x00,0x00};*/
     
     UINT16 y = world_y + 15;   // borde inferior del sprite
     UINT16 x1 = world_x - 7;   // borde izquierdo
@@ -181,24 +170,6 @@ BYTE down_collision(UINT16 world_x, UINT16 world_y) {
     UINT8 tiles_1 = get_tile_at_world(x1, y);
     UINT8 tiles_2 = get_tile_at_world(x2, y);
     UINT8 tiles_3 = get_tile_at_world(x3, y);
-
-
-    /*
-    UINT16 world_y_1 = world_y + 16;
-    //UINT16 world_y_1 = world_y + 8;
-    UINT16 world_x_1 = world_x - 16;
-    UINT16 world_x_3 = world_x + 16;
-    
-
-    UINT8 tiles_1 = get_tile_at_world(world_x_1, world_y_1);
-    UINT8 tiles_2 = get_tile_at_world(world_x,   world_y_1);
-    UINT8 tiles_3 = get_tile_at_world(world_x_3, world_y_1);
-    */
-
-    //numberToTilesXY(tiles_1, &hud_line[10], 1);
-    //numberToTilesXY(tiles_2, &hud_line[12], 1);
-    //numberToTilesXY(tiles_3, &hud_line[14], 1);
-    //set_win_tiles(0, 0, 20, 1, hud_line);
 
     if ((tiles_2 != 0x7A) && (tiles_2 != 0xFF)) {
        return TRUE;
@@ -223,13 +194,6 @@ BYTE up_collision(UINT16 world_x, UINT16 world_y) {
 
     return FALSE;
 
-    //const UINT8 inset = 1;
-    /*
-    unsigned char hud_line[20] = {
-    0x1F,0x1A,0x00,0x00,0x00,0x00,0x00,0x00, 
-    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,            
-    0x00,0x00};*/
-
     UINT16 y = world_y - 1;    // borde superior
     UINT16 x1 = world_x - 7;
     UINT16 x2 = world_x;
@@ -238,24 +202,6 @@ BYTE up_collision(UINT16 world_x, UINT16 world_y) {
     UINT8 tiles_1 = get_tile_at_world(x1, y);
     UINT8 tiles_2 = get_tile_at_world(x2, y);
     UINT8 tiles_3 = get_tile_at_world(x3, y);
-
-    
-    /*
-    UINT16 world_y_1 = world_y - 16;
-    //UINT16 world_y_1 = world_y - 8;
-    UINT16 world_x_1 = world_x - 16;
-    UINT16 world_x_3 = world_x + 16;
-    
-
-    UINT8 tiles_1 = get_tile_at_world(world_x_1, world_y_1);
-    UINT8 tiles_2 = get_tile_at_world(world_x,   world_y_1);
-    UINT8 tiles_3 = get_tile_at_world(world_x_3, world_y_1);
-    */
-
-    //numberToTilesXY(tiles_1, &hud_line[10], 1);
-    //numberToTilesXY(tiles_2, &hud_line[12], 1);
-    //numberToTilesXY(tiles_3, &hud_line[14], 1);
-    //set_win_tiles(0, 0, 20, 1, hud_line);
 
     if ((tiles_2 != 0x7A) && (tiles_2 != 0xFF)) {
        return TRUE;
@@ -278,19 +224,6 @@ BYTE left_collision(UINT16 world_x, UINT16 world_y) {
 
     return FALSE;
 
-    //const UINT8 inset = 1;
-    /*
-    unsigned char hud_line[20] = {
-    0x16,0x10,0x00,0x00,0x00,0x00,0x00,0x00, 
-    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,            
-    0x00,0x00};*/
-
-    /*
-    UINT16 x = world_x - 7;    // borde izquierdo
-    UINT16 y1 = world_y - 7;
-    UINT16 y2 = world_y;
-    UINT16 y3 = world_y + 7;
-    */
     UINT16 x  = world_x - 1;    // borde izquierdo
     UINT16 y1 = world_y - 7;
     UINT16 y2 = world_y;
@@ -300,24 +233,6 @@ BYTE left_collision(UINT16 world_x, UINT16 world_y) {
     UINT8 tiles_1 = get_tile_at_world(x, y1);
     UINT8 tiles_2 = get_tile_at_world(x, y2);
     UINT8 tiles_3 = get_tile_at_world(x, y3);
-    
-
-    /*
-    //UINT16 world_x_1 = world_x - 16;
-    UINT16 world_x_1 = world_x - 16;
-    UINT16 world_y_2 = world_y - 16;
-    UINT16 world_y_3 = world_y + 16;
-
-    UINT8 tiles_1 = get_tile_at_world(world_x_1, world_y);
-    UINT8 tiles_2 = get_tile_at_world(world_x_1, world_y_2);
-    UINT8 tiles_3 = get_tile_at_world(world_x_1, world_y_3);
-    */
-
-    //numberToTilesXY(tiles_1, &hud_line[10], 1);
-    //numberToTilesXY(tiles_2, &hud_line[12], 1);
-    //numberToTilesXY(tiles_3, &hud_line[14], 1);
-    //set_win_tiles(0, 0, 20, 1, hud_line);
-
     
     if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
        return TRUE;
@@ -337,21 +252,6 @@ BYTE right_collision(UINT16 world_x, UINT16 world_y) {
 
     return FALSE;
 
-    //const UINT8 inset = 1;
-
-    /*
-    unsigned char hud_line[20] = {
-    0x1C,0x13,0x00,0x00,0x00,0x00,0x00,0x00, 
-    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,            
-    0x00,0x00};*/
-
-    /*
-    UINT16 x = world_x + 7;    // borde derecho
-    UINT16 y1 = world_y - 7;
-    UINT16 y2 = world_y;
-    UINT16 y3 = world_y + 7;
-    */
-
    UINT16 x  = world_x + 15;    // borde derecho
    UINT16 y1 = world_y - 7;
    UINT16 y2 = world_y;
@@ -361,24 +261,6 @@ BYTE right_collision(UINT16 world_x, UINT16 world_y) {
     UINT8 tiles_1 = get_tile_at_world(x, y1);
     UINT8 tiles_2 = get_tile_at_world(x, y2);
     UINT8 tiles_3 = get_tile_at_world(x, y3);
-
-    
-    //UINT16 world_x_1 = world_x + 16;
-    /*
-    UINT16 world_x_1 = world_x + 16;
-    UINT16 world_y_2 = world_y - 16;
-    UINT16 world_y_3 = world_y + 16;
-
-    UINT8 tiles_1 = get_tile_at_world(world_x_1, world_y);
-    UINT8 tiles_2 = get_tile_at_world(world_x_1, world_y_2);
-    UINT8 tiles_3 = get_tile_at_world(world_x_1, world_y_3);
-    */
-
-
-    //numberToTilesXY(tiles_1, &hud_line[10], 1);
-    //numberToTilesXY(tiles_2, &hud_line[12], 1);
-    //numberToTilesXY(tiles_3, &hud_line[14], 1);
-    //set_win_tiles(0, 0, 20, 1, hud_line);
 
     
     if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
@@ -394,23 +276,7 @@ BYTE right_collision(UINT16 world_x, UINT16 world_y) {
 
 BYTE nomove_collision(UINT16 world_x, UINT16 world_y) {
 
-    return FALSE;
-
-
-    //const UINT8 inset = 1;
-
-    /*
-    unsigned char hud_line[20] = {
-    0x18,0x19,0x00,0x00,0x00,0x00,0x00,0x00, 
-    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,            
-    0x00,0x00};*/
-
-    /*
-    UINT16 x = world_x + 7;    // borde derecho
-    UINT16 y1 = world_y - 7;
-    UINT16 y2 = world_y;
-    UINT16 y3 = world_y + 7;
-    */
+  return FALSE;
 
    UINT16 x  = world_x + 7;    // borde derecho
    UINT16 y1 = world_y - 7;
@@ -421,25 +287,6 @@ BYTE nomove_collision(UINT16 world_x, UINT16 world_y) {
     UINT8 tiles_1 = get_tile_at_world(x, y1);
     UINT8 tiles_2 = get_tile_at_world(x, y2);
     UINT8 tiles_3 = get_tile_at_world(x, y3);
-
-    
-    //UINT16 world_x_1 = world_x + 16;
-    /*
-    UINT16 world_x_1 = world_x + 16;
-    UINT16 world_y_2 = world_y - 16;
-    UINT16 world_y_3 = world_y + 16;
-
-    UINT8 tiles_1 = get_tile_at_world(world_x_1, world_y);
-    UINT8 tiles_2 = get_tile_at_world(world_x_1, world_y_2);
-    UINT8 tiles_3 = get_tile_at_world(world_x_1, world_y_3);
-    */
-
-
-    //numberToTilesXY(tiles_1, &hud_line[10], 1);
-    //numberToTilesXY(tiles_2, &hud_line[12], 1);
-    //numberToTilesXY(tiles_3, &hud_line[14], 1);
-    //set_win_tiles(0, 0, 20, 1, hud_line);
-
     
     if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
        return TRUE;
@@ -451,8 +298,75 @@ BYTE nomove_collision(UINT16 world_x, UINT16 world_y) {
 
     return FALSE;
 }
+*/
 
 
+/**
+ * Player Movement strategy
+ * 
+ * @param scroll_x 
+ * @return BYTE 
+ */
+
+UINT8 actionPlayer(UINT16 scroll_x) {
+
+    UINT16 world_x = elements[PLAYER_ID].x + scroll_x;
+    UINT16 world_y = elements[PLAYER_ID].y;
+
+    UINT8 dx = 0;
+    UINT8 dy = 0;
+
+    UINT8 TILE = TILE_EMPTY;
+
+    if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
+        dx = -elements[PLAYER_ID].inc;
+        TILE = leftCollisionEnv(world_x + dx, world_y);
+        EMU_printf("LEFT %hx\n",TILE);
+    }
+
+    if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
+        dx = elements[PLAYER_ID].inc;
+        TILE = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
+        EMU_printf("RIGHT %hx\n",TILE);
+    }
+
+    if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
+        dy = -elements[PLAYER_ID].inc;
+        TILE = upCollisionEnv(world_x, world_y + dy);
+        EMU_printf("UP %hx\n",TILE);
+    }
+
+    if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
+        dy = elements[PLAYER_ID].inc;
+        TILE = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
+        EMU_printf("DOWN %hx\n",TILE);
+    }
+
+    if (dx == 0 && dy == 0) {
+        TILE = noMoveCollisionEnv(world_x, world_y);
+        EMU_printf("NOMOVE %hx\n",TILE);
+    }
+
+    elements[PLAYER_ID].x += dx;
+    elements[PLAYER_ID].y += dy;
+
+    return TILE;
+}
+
+
+BYTE processPlayer(UINT16 scroll_x) {
+    UINT8 block = actionPlayer(scroll_x);
+    BYTE boom = isCollideElement(block);
+    if (!boom) {
+        moveTilePlayer();
+    }
+    //return boom;
+    return FALSE;
+}
+
+
+
+/*
 BYTE movePlayer(UINT16 scroll_x) {
 
    UINT16 world_x = 0;
@@ -518,3 +432,4 @@ BYTE movePlayer(UINT16 scroll_x) {
 
     return FALSE;
 }
+*/
