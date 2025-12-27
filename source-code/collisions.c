@@ -35,8 +35,11 @@ BYTE isCollideElement(UINT8 tile) {
 
 UINT8 getTileAtWorld(UINT16 world_x, UINT16 world_y) {
 
-    UINT16 wx = world_x >> 3;
-    UINT16 wy = world_y >> 3;
+    UINT16 wx = (world_x >> 3) - 1;
+    UINT16 wy = (world_y >> 3) - 2;
+
+    //UINT16 wx = (world_x >> 3);
+    //UINT16 wy = (world_y >> 3);
 
     return background_map_3[wy * MAP_WIDTH_TILE + wx];
 }
@@ -57,7 +60,7 @@ UINT8 rightCollisionEnv(UINT16 world_x, UINT16 world_y, UINT16 width){
     return getTileAtWorld(world_x + width, world_y);
 }
 
-UINT8 noMoveCollisionEnv(UINT16 world_x, UINT16 world_y){
-    return getTileAtWorld(world_x, world_y);
+UINT8 noMoveCollisionEnv(UINT16 world_x, UINT16 world_y, UINT16 width){
+    return getTileAtWorld(world_x + width, world_y);
 }
 

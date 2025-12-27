@@ -101,7 +101,10 @@
 #define LEVEL_1_INDEX 1
 
 
-
+#define TYPE_PLAYER 0
+#define TYPE_ENEMY 1
+#define TYPE_SHOOT_PLAYER 2
+#define TYPE_SHOOT_ENEMY 3
 
 struct Frame {
     UINT8 spritids[PICS];  //frame component
@@ -122,6 +125,8 @@ struct Element {
     UINT8 x;
     UINT8 x_world;
     UINT8 y;
+
+    UINT8 type;
 
     UINT8 group_id;
     UINT8 group_id_index;

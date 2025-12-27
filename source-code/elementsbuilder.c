@@ -2,8 +2,8 @@
 #include "global.h"
 #include "world.h"
 #include "collisions.h"
-#include "emuprintf.h"
 #include <stdio.h>
+#include <gb/emu_debug.h>
 
 
 ElementType elements[NUMELEMENTS];
@@ -81,6 +81,8 @@ void setupPlayer() {
 
    elements[PLAYER_ID].lives = LIVES_PLAYER;
    elements[PLAYER_ID].scores = SCORE_PLAYER;
+
+   elements[PLAYER_ID].type = TYPE_PLAYER;
    
    elements[PLAYER_ID].type_shoot = NO_SHOOT;
    elements[PLAYER_ID].group_id = NO_GROUP;
@@ -118,13 +120,77 @@ void setupPlayer() {
    moveElement(&elements[PLAYER_ID]);
 }
 
-
 //GET ELEMENT AT INDEX
 ElementType *getElement(UINT8 index) {
     return &elements[index];
 }
 
+/**
+ * Player Movement strategy
+ * 
+ * @param scroll_x 
+ * @return BYTE 
+ */
 
+UINT8 actionPlayer(UINT16 scroll_x) {
+
+    UINT16 world_x = elements[PLAYER_ID].x + scroll_x;
+    UINT16 world_y = elements[PLAYER_ID].y;
+
+    UINT8 dx = 0;
+    UINT8 dy = 0;
+
+    UINT8 TILE = TILE_EMPTY;
+
+    if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
+        dx = -elements[PLAYER_ID].inc;
+        TILE = leftCollisionEnv(world_x - elements[PLAYER_ID].inc, world_y);
+        EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
+    }
+
+    if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
+        dx = elements[PLAYER_ID].inc;
+        TILE = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
+        EMU_printf("RIGHT %hx\n",TILE);
+    }
+
+    if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
+        dy = -elements[PLAYER_ID].inc;
+        TILE = upCollisionEnv(world_x, world_y - elements[PLAYER_ID].inc);
+        EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
+    }
+
+    if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
+        dy = elements[PLAYER_ID].inc;
+        TILE = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
+        EMU_printf("DOWN %hx\n",TILE);
+    }
+
+    if (dx == 0 && dy == 0) {
+        TILE = noMoveCollisionEnv(world_x, world_y, elements[PLAYER_ID].width);
+        EMU_printf("NOMOVE %hx\n",TILE);
+    }
+
+    elements[PLAYER_ID].x += dx;
+    elements[PLAYER_ID].y += dy;
+
+    return TILE;
+}
+
+
+BYTE processPlayer(UINT16 scroll_x) {
+    UINT8 block = actionPlayer(scroll_x);
+    BYTE boom = isCollideElement(block);
+    if (!boom) {
+        moveTilePlayer();
+    }
+    return boom;
+    //return FALSE;
+}
+
+
+
+//OLD CODE.
 
 /*
 UBYTE isCollision(UINT16 elem_1_x, UINT16 elem_1_y, UINT16 wall_x, UINT16 wall_y) {
@@ -301,68 +367,8 @@ BYTE nomove_collision(UINT16 world_x, UINT16 world_y) {
 */
 
 
-/**
- * Player Movement strategy
- * 
- * @param scroll_x 
- * @return BYTE 
- */
-
-UINT8 actionPlayer(UINT16 scroll_x) {
-
-    UINT16 world_x = elements[PLAYER_ID].x + scroll_x;
-    UINT16 world_y = elements[PLAYER_ID].y;
-
-    UINT8 dx = 0;
-    UINT8 dy = 0;
-
-    UINT8 TILE = TILE_EMPTY;
-
-    if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
-        dx = -elements[PLAYER_ID].inc;
-        TILE = leftCollisionEnv(world_x + dx, world_y);
-        EMU_printf("LEFT %hx\n",TILE);
-    }
-
-    if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
-        dx = elements[PLAYER_ID].inc;
-        TILE = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
-        EMU_printf("RIGHT %hx\n",TILE);
-    }
-
-    if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
-        dy = -elements[PLAYER_ID].inc;
-        TILE = upCollisionEnv(world_x, world_y + dy);
-        EMU_printf("UP %hx\n",TILE);
-    }
-
-    if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
-        dy = elements[PLAYER_ID].inc;
-        TILE = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
-        EMU_printf("DOWN %hx\n",TILE);
-    }
-
-    if (dx == 0 && dy == 0) {
-        TILE = noMoveCollisionEnv(world_x, world_y);
-        EMU_printf("NOMOVE %hx\n",TILE);
-    }
-
-    elements[PLAYER_ID].x += dx;
-    elements[PLAYER_ID].y += dy;
-
-    return TILE;
-}
 
 
-BYTE processPlayer(UINT16 scroll_x) {
-    UINT8 block = actionPlayer(scroll_x);
-    BYTE boom = isCollideElement(block);
-    if (!boom) {
-        moveTilePlayer();
-    }
-    //return boom;
-    return FALSE;
-}
 
 
 

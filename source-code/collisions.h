@@ -23,9 +23,9 @@ UINT8 upCollisionEnv(UINT16 world_x, UINT16 world_y);
 //COLL WHEN LEFT
 UINT8 leftCollisionEnv(UINT16 world_x, UINT16 world_y);
 //COLL WHEN RIGHT
-UINT8 rightCollisionEnv(UINT16 world_x, UINT16 world_y, UINT16 weight);
+UINT8 rightCollisionEnv(UINT16 world_x, UINT16 world_y, UINT16 width);
 //COLL WHEN NO MOVE
-UINT8 noMoveCollisionEnv(UINT16 world_x, UINT16 world_y);
+UINT8 noMoveCollisionEnv(UINT16 world_x, UINT16 world_y, UINT16 width);
 
 
 
