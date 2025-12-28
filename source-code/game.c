@@ -10,12 +10,13 @@
 void run() {
 
     BYTE END = FALSE;
-    BYTE BOOM = FALSE;
+    BYTE END_LEVEL = FALSE;
 
 
     setupPlayer();
 
     //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END); i++) {
+    //END_LEVEL = FALSE;
     launchLevel(LEVEL_1_IDX);
     loadElementsForLevel(LEVEL_1_IDX);
     
@@ -25,7 +26,7 @@ void run() {
     ElementType *player = getElement(PLAYER_ID);
 
 
-    while (!END) {
+    while ((!END) && (!END_LEVEL)){
 
         //SET SCORE PLAYER
         setHUD(player->scores, player->lives);
@@ -37,11 +38,10 @@ void run() {
         incWorldScroll();
         
         //PROCESS FRAME LEVEL. CHECK IF END
-        BYTE END_LEVEL = stepLevel();
+        END_LEVEL = stepLevel();
         
         //MOVE PLAYER
-        BOOM = processPlayer(getWorldScroll());
-        END  = END_LEVEL || BOOM;
+        END = processPlayer(getWorldScroll());
     }
     //}
     

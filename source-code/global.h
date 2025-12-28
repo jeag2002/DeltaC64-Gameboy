@@ -1,12 +1,11 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
-
+//SCREEN BOUNDARIES
 #define LIMIT_BOUNDARY_X_INF 8
 #define LIMIT_BOUNDARY_X_SUP 168 
 #define LIMIT_BOUNDARY_Y_INF 16
 #define LIMIT_BOUNDARY_Y_SUP 152
-
 
 //SIZE STANDARD MAP IN TILES
 #define MAP_WIDTH_TILE       160
@@ -45,11 +44,28 @@
 //NUM IMAGES x FRAMES 
 #define NUM_IMAGES_BY_FRAME_PLAYER 4
 
+//LEVELS
+#define NUMLEVELS 5
+
+//MAX STOP BACKGROUND FRAME.
+#define STOPS 3
+
+//MAX NUM GROUPS OF ENEMIES BY STOP.
+#define NUM_GROUP_ENEMIES_BY_STOP 1
+
+//MAX NUM ENEMIES BY GROUP
+#define NUMENEMIES 4
+
+//MAX STEPS ENEMIES
+#define NUMSTEPS 20
+
 //SPECIFIC TILES
 #define TILE_EMPTY 0x7A
 #define TILE_COLLIDE_INF 0x26
 #define TILE_COLLIDE_SUP 0x79
 
+//SHOTS VARIABLES
+///////////////////////////////////////////////////////
 //TILE x 1 SHOOT MODE
 #define TILE_SHOOT_1_1 0x3A
 #define TILE_SHOOT_1_2 0x3B
@@ -73,16 +89,23 @@
 #define TILE_SHOOT_S_2 0x2B
 #define TILE_SHOOT_S_3 0x2C
 #define TILE_SHOOT_S_4 0x2D
+/////////////////////////////////////////////////////////////////
+
 
 //PLAYER
 #define PLAYER_POS_X_INI 80
 #define PLAYER_POS_Y_INI 80
 
+//POS ENEMIES
+#define ENEMY_POS_X_INI 116;
+#define ENEMY_POS_Y_INI 80;
+
+//SIZES (ALL SIZE THE SAME)
 #define ELEMENT_WIDTH 16
 #define ELEMENT_HEIGHT 16
 
-
-//#define TILE_VOID 0xFF
+//NO VALUE
+#define NO_VALUE 0
 
 //INC MOVEMENT PLAYER
 #define INC_PLAYER 1
@@ -92,6 +115,9 @@
 #define LIVES_PLAYER 3
 //TYPE SHOOT
 #define NO_SHOOT 0
+
+//STOP ID
+#define NO_STOP 0
 //GROUP ID
 #define NO_GROUP 0
 //GROUP ID INDEX
@@ -100,12 +126,22 @@
 //LEVELS
 #define LEVEL_1_INDEX 1
 
-
+//TYPE ELEMENTS
 #define TYPE_PLAYER 0
 #define TYPE_ENEMY 1
 #define TYPE_SHOOT_PLAYER 2
 #define TYPE_SHOOT_ENEMY 3
 
+//TYPE ENEMIES
+#define TYPE_ENEMY_PLANET 11
+#define TYPE_ENEMY_STAR 12
+#define TYPE_ENEMY_OVNI 13
+
+
+
+
+//STRUCTURE ELEMENTS
+///////////////////////////////////////////////////////////////
 struct Frame {
     UINT8 spritids[PICS];  //frame component
     UINT8 num_spritids;    //num part of frames
@@ -128,6 +164,7 @@ struct Element {
 
     UINT8 type;
 
+    UINT8 stop_id;    
     UINT8 group_id;
     UINT8 group_id_index;
 
@@ -143,6 +180,43 @@ struct Element {
 
 typedef struct Element ElementType;
 extern ElementType elements[NUMELEMENTS];
+///////////////////////////////////////////////////////////////
 
+
+
+
+//STRUCTURE GROUP ELEMENTS
+///////////////////////////////////////////////////////////////
+
+typedef struct {
+    UINT8 x;
+    UINT8 y;
+} Coordinate;
+
+typedef struct {
+    Coordinate movement[NUMENEMIES];
+} MovementType;
+
+typedef struct {
+    UINT8 num_enemies;
+    UINT8 type_enemy;
+    UINT8 num_frames;
+    UINT8 steps;
+    MovementType *behav_enemy;
+} EnemyGroupType;
+
+typedef struct {
+    UINT16 stop;
+    UINT8  groupEnemiesByStop;
+    EnemyGroupType enemiesByStop[NUM_GROUP_ENEMIES_BY_STOP];
+} EnemyEntryType;
+
+typedef struct {
+    UINT8 id;
+    UINT8 numstops;
+    EnemyEntryType stops[STOPS];
+} LevelType;
+
+///////////////////////////////////////////////////////////
 
 #endif

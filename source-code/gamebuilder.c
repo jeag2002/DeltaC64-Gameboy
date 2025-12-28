@@ -6,6 +6,7 @@
 
 #include "level_1.h"
 #include "level_1_tiles_2.h"
+#include "global.h"
 #include "Sprites.h"
 #include "background.h"
 #include "captions.h"
@@ -24,6 +25,7 @@ unsigned char hud_line[20] = {
 
 font_t min_font;
 unsigned char *background_map;
+
 
 //CONVERSION VALUES FOR HUD
 void numberToTiles(UINT16 value, unsigned char* dest, UINT8 digits) {
@@ -72,7 +74,7 @@ void launchLevel(int level) {
     set_bkg_data(0, 123, tile_background_map);
 
     //SPRITES
-    set_sprite_data(0, 62, sprites_videogame);
+    set_sprite_data(0, 78, sprites_videogame);
 
     //HUD
     /////////////////////////////////////////////////
@@ -104,7 +106,7 @@ void launchLevel(int level) {
     //LAUNCH LEVEL MESSAGE
     show_level_one_msg();
     wait_frames_level_one(30);
-    hide_level_one_msg();
+    hide_msg();
     //END LEVEL MESSAGE
 }
 
@@ -129,6 +131,9 @@ BYTE stepLevel() {
 
     if(scroll_x >= (MAP_WIDTH_TILE - SCREEN_WIDTH_TILE) * 8) {
         DONE = 1;
+        show_level_end_msg();
+        wait_frames_level_one(30);
+        hide_msg();
     }
 
     return DONE;

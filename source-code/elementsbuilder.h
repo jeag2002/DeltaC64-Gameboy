@@ -5,19 +5,27 @@
 #include <stdint.h>
 #include "global.h"
 
-
-//SET 
+//SET OTHER ELEMENTS INTO THE LEVEL.
 void loadElementsForLevel(int level);
-//MOVE BUTTON PLAYER
+
+//SET ENEMIES INTO THE LEVEL.
+void processEnemiesLevel();
+
+//PLAYER ACTIONS (MOVE/SHOOT)
 BYTE processPlayer(UINT16 scroll_x);
-//TILES ELEMENT
+
+//MOVE TILES OF A FRAME OF AN ELEMENT
 void setTilesElement(ElementType *element);
-//MOVE ELEMENT
+
+//MOVE FRAME OF AN ELEMENT
 void moveElement(ElementType *element);
-//TILES PLAYER ARRANGEMENT
-void moveTilePlayer();
+
+//MOVE FRAME->TILES OF A ELEMENT.
+void moveTileElement(UINT8 index);
+
 //CREATE PLAYER
 void setupPlayer();
+
 //GET ELEMENT BY ID
 ElementType *getElement(UINT8 index);
 

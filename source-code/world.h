@@ -5,18 +5,11 @@
  */
 
 #include <gb/gb.h>
+#include "global.h"
 
 #ifndef WORLD_H
 #define WORLD_H
 
-#define NUMLEVELS 5
-
-struct Level {
-    UINT8 id;
-};
-
-typedef struct Level LevelType;
-extern LevelType levels[NUMLEVELS];
-
+LevelType *buildLevelEnemiesFromIndex(int index);
 unsigned char *getLevelFromIndex(int index);
 #endif

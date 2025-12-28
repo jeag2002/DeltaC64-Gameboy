@@ -11,6 +11,7 @@
 #define MSG_DURATION 120       // frames visibles (~2 s)
 
 #define LEVEL_ONE_LEN 9
+#define LEVEL_END_LEN 9
 
 #define SPR_PAL(p) ((_cpu == CGB_TYPE) ? ((p) & 0x07) : ((p) ? 0x10 : 0x00))
 
@@ -40,24 +41,28 @@ const unsigned char level_one_spr_tiles[LEVEL_ONE_LEN * 16] = {
     255,0,  128,0,  128,0,  255,0,  128,0,  128,0,  255,0,  0,0
 };
 
-/*
-const unsigned char msg_tiles[] = {
-    // L (tile 0)
-    0x80,0x80,0x80,0x80,0x80,0x80,0x80,0xFF,
-    // E (tile 1)
-    0xFF,0x81,0x81,0xFF,0x81,0x81,0x81,0xFF,
-    // V (tile 2)
-    0x81,0x81,0x81,0x42,0x24,0x18,0x18,0x18,
-    // O (tile 3)
-    0x7E,0x81,0x81,0x81,0x81,0x81,0x81,0x7E,
-    // N (tile 4)
-    0x81,0xC1,0xA1,0x91,0x89,0x85,0x83,0x81,
-    // E (tile 5)
-    0xFF,0x81,0x81,0xFF,0x81,0x81,0x81,0xFF,
-    // Espacio (tile 6)
-    0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
+
+const unsigned char level_end_spr_tiles[LEVEL_END_LEN * 16] = {
+    // 'L'
+    128,0,  128,0,  128,0,  128,0,  128,0,  128,0,  255,0,  0,0,
+    // 'E'
+    255,0,  128,0,  128,0,  255,0,  128,0,  128,0,  255,0,  0,0,
+    // 'V'
+    129,0,  129,0,  66,0,   66,0,   36,0,   36,0,   24,0,   0,0,
+    // 'E'
+    255,0,  128,0,  128,0,  255,0,  128,0,  128,0,  255,0,  0,0,
+    // 'L'
+    128,0,  128,0,  128,0,  128,0,  128,0,  128,0,  255,0,  0,0,
+    // ESPACIO
+    0,0,    0,0,    0,0,    0,0,    0,0,    0,0,    0,0,    0,0,
+    // 'E'
+    255,0,  128,0,  128,0,  255,0,  128,0,  128,0,  255,0,  0,0,
+    // 'N'
+    193,0,  161,0,  145,0,  137,0,  133,0,  131,0,  129,0,  0,0,
+    // 'D'
+    255,0,  129,0,  129,0,  129,0,  129,0,  129,0,  255,0,  0,0
+
 };
-*/
 
 // Texto "LEVEL ONE" → índices de tiles
 //const UINT8 msg_map[] = { 0,1,2,1,0,6,3,4,5 };
@@ -79,22 +84,27 @@ void show_level_one_msg() {
         set_sprite_prop(i, SPR_PAL(0));  
         move_sprite(i, (uint8_t)(x_px + (i * 8) + 2), y_px);
     }
-
-    /*
-    set_sprite_data(MSG_SPRITE_BASE, 7, msg_tiles);
-
-    UINT8 x = MSG_X_START;
-    for (UINT8 i = 0; i < MSG_SPRITE_COUNT; i++) {
-        set_sprite_tile(i, MSG_SPRITE_BASE + msg_map[i]);
-        move_sprite(i, x, MSG_Y);
-        x += 8; // cada sprite 8 px
-    }
-    */
-
 }
 
+void show_level_end_msg() {
+
+    UINT8 x_px = MSG_X_START;
+    UINT8 y_px = MSG_Y;
+
+     // Cargar data de sprites para START
+    set_sprite_data(MSG_SPRITE_BASE, LEVEL_ONE_LEN, level_end_spr_tiles);
+
+    // Asignar tiles a 5 sprites consecutivos y colocarlos
+    for (uint8_t i = 0; i < LEVEL_ONE_LEN; i++) {
+        set_sprite_tile(i, MSG_SPRITE_BASE + i);
+        set_sprite_prop(i, SPR_PAL(0));  
+        move_sprite(i, (uint8_t)(x_px + (i * 8) + 2), y_px);
+    }
+}
+
+
 // Ocultar mensaje (mover fuera de pantalla)
-void hide_level_one_msg() {
+void hide_msg() {
     for (UINT8 i = 0; i < MSG_SPRITE_COUNT; i++) {
         move_sprite(i, 0, 0);
     }
