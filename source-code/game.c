@@ -9,39 +9,50 @@
 
 void run() {
 
-    BYTE END = FALSE;
+    //END DUE TO SOMETHING HAPPENED IN THE MAP
+    BYTE END_GAME_BG = FALSE;
+    //END DUE TO SOMETHING HAPPENED WITH THE ELEMENTS OF THE MAP
+    BYTE END_GAME_FG = FALSE;
+    //END LEVEL
     BYTE END_LEVEL = FALSE;
-
 
     setupPlayer();
 
-    //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END); i++) {
-    //END_LEVEL = FALSE;
+    //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END_GAME_BG && !END_GAME_FG); i++) {
+    
+    //BYTE END_LEVEL = FALSE;
+    cleanElementData();
     launchLevel(LEVEL_1_IDX);
     loadElementsForLevel(LEVEL_1_IDX);
     
-    
-    int score = 1;
-
     ElementType *player = getElement(PLAYER_ID);
 
+    UINT8 enemy_timer = 0;
 
-    while ((!END) && (!END_LEVEL)){
+    while ((!END_GAME_BG) && (!END_GAME_FG) && (!END_LEVEL)){
 
-        //SET SCORE PLAYER
-        setHUD(player->scores, player->lives);
+        wait_vbl_done();
         
-        //DELAY
-        performantDelay(STEP);
-        
-        //INC WORLD MOVEMENT
-        incWorldScroll();
-        
+        //MOVE PLAYER. CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE BACKGROUND
+        END_GAME_BG = movePlayer(getWorldScroll());
+
+        if (!stopScrolling(getWorldScroll())) {
+             //INC WORLD MOVEMENT
+            incWorldScroll();
+        } else {
+            //MOVE ENEMIES, EVERY 3 FRAMES.
+            if(++enemy_timer == 3) {
+                enemy_timer = 0;
+                moveEnemies();  
+            }
+            //CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE FOREGROUND
+            END_GAME_FG = collideElements();
+        }
+
         //PROCESS FRAME LEVEL. CHECK IF END
         END_LEVEL = stepLevel();
-        
-        //MOVE PLAYER
-        END = processPlayer(getWorldScroll());
+        //SET SCORE PLAYER
+        setHUD(player->scores, player->lives);
     }
     //}
     

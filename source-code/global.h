@@ -165,8 +165,7 @@ struct Element {
     UINT8 type;
 
     UINT8 stop_id;    
-    UINT8 group_id;
-    UINT8 group_id_index;
+    UINT8 enemy_id;
 
     UINT8 lives;
     UINT8 scores;
@@ -189,8 +188,8 @@ extern ElementType elements[NUMELEMENTS];
 ///////////////////////////////////////////////////////////////
 
 typedef struct {
-    UINT8 x;
-    UINT8 y;
+    INT8 x;
+    INT8 y;
 } Coordinate;
 
 typedef struct {
@@ -206,9 +205,9 @@ typedef struct {
 } EnemyGroupType;
 
 typedef struct {
-    UINT16 stop;
-    UINT8  groupEnemiesByStop;
-    EnemyGroupType enemiesByStop[NUM_GROUP_ENEMIES_BY_STOP];
+    INT16 stop;
+    BYTE processed;
+    EnemyGroupType enemiesByStop;
 } EnemyEntryType;
 
 typedef struct {

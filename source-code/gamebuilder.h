@@ -9,7 +9,7 @@
 /// @brief 
 extern unsigned char hud_line[];
 
-UINT16 getWorldScroll();
+INT16 getWorldScroll();
 void setHUD(UINT8 score, UINT8 lives);
 void performantDelay(UINT8 numloops);
 void launchLevel(int level);

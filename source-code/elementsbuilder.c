@@ -13,7 +13,11 @@ unsigned char *background_map_2;
 LevelType *elements_map;
 
 //elements ini index for elementType.
-UINT8 numElements = 1;
+static UINT8 currentElements = 1;
+//current stop
+static UINT8 currentStopFrame = 0;
+//current enemy frame x stop
+static UINT8 currentEnemyFrame = 0;
 
 //LOAD ELEMENT FOR LEVEL
 void loadElementsForLevel(int level) {
@@ -34,7 +38,7 @@ void loadElementsForLevel(int level) {
 //type_enemy => kind of enemy
 //index_id => first VRAM index
 //frame_id => first frame.
-void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop, int group, int enemy, int type_enemy, int index_id, int frame_id) {
+void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id) {
 
    elements[index].disabled = FALSE;
 
@@ -54,8 +58,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop, i
 
    //where the enemy is situated
    elements[index].stop_id = stop;
-   elements[index].group_id = group;
-   elements[index].group_id_index = enemy;
+   elements[index].enemy_id = enemy;
    
    //VRAM tiles
    elements[index].current_index = index_id;
@@ -66,28 +69,28 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop, i
         elements[index].current_frame = frame_id;       //index frame
         elements[index].num_frames = NUM_FRAMES_PLAYER; //num max frames.
 
-        elements[index].numFrames[0].spritids[0] = 61;
-        elements[index].numFrames[0].spritids[1] = 62;
-        elements[index].numFrames[0].spritids[2] = 63;
-        elements[index].numFrames[0].spritids[3] = 64;
+        elements[index].numFrames[0].spritids[0] = 60;
+        elements[index].numFrames[0].spritids[1] = 61;
+        elements[index].numFrames[0].spritids[2] = 62;
+        elements[index].numFrames[0].spritids[3] = 63;
         elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[1].spritids[0] = 65;
-        elements[index].numFrames[1].spritids[1] = 66;
-        elements[index].numFrames[1].spritids[2] = 67;
-        elements[index].numFrames[1].spritids[3] = 68;
+        elements[index].numFrames[1].spritids[0] = 64;
+        elements[index].numFrames[1].spritids[1] = 65;
+        elements[index].numFrames[1].spritids[2] = 66;
+        elements[index].numFrames[1].spritids[3] = 67;
         elements[index].numFrames[1].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[2].spritids[0] = 69;
-        elements[index].numFrames[2].spritids[1] = 70;
-        elements[index].numFrames[2].spritids[2] = 71;
-        elements[index].numFrames[2].spritids[3] = 72;  
+        elements[index].numFrames[2].spritids[0] = 68;
+        elements[index].numFrames[2].spritids[1] = 69;
+        elements[index].numFrames[2].spritids[2] = 70;
+        elements[index].numFrames[2].spritids[3] = 71;  
         elements[index].numFrames[2].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[3].spritids[0] = 73;
-        elements[index].numFrames[3].spritids[1] = 74;
-        elements[index].numFrames[3].spritids[2] = 75;
-        elements[index].numFrames[3].spritids[3] = 76;
+        elements[index].numFrames[3].spritids[0] = 72;
+        elements[index].numFrames[3].spritids[1] = 73;
+        elements[index].numFrames[3].spritids[2] = 74;
+        elements[index].numFrames[3].spritids[3] = 75;
         elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
    } else if (type_enemy == TYPE_ENEMY_STAR) {
@@ -95,16 +98,16 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop, i
         elements[index].current_frame = frame_id; //index frame
         elements[index].num_frames = 2;    //num max frames.
 
-        elements[index].numFrames[0].spritids[0] = 53;
-        elements[index].numFrames[0].spritids[1] = 54;
-        elements[index].numFrames[0].spritids[2] = 55;
-        elements[index].numFrames[0].spritids[3] = 56;
+        elements[index].numFrames[0].spritids[0] = 52;
+        elements[index].numFrames[0].spritids[1] = 53;
+        elements[index].numFrames[0].spritids[2] = 54;
+        elements[index].numFrames[0].spritids[3] = 55;
         elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[1].spritids[0] = 57;
-        elements[index].numFrames[1].spritids[1] = 58;
-        elements[index].numFrames[1].spritids[2] = 59;
-        elements[index].numFrames[1].spritids[3] = 60;
+        elements[index].numFrames[1].spritids[0] = 56;
+        elements[index].numFrames[1].spritids[1] = 57;
+        elements[index].numFrames[1].spritids[2] = 58;
+        elements[index].numFrames[1].spritids[3] = 59;
         elements[index].numFrames[1].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
    } else if (type_enemy == TYPE_ENEMY_OVNI) {
@@ -112,35 +115,35 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop, i
         elements[index].current_frame = frame_id;       //index frame
         elements[index].num_frames = NUM_FRAMES_PLAYER; //num max frames.
 
-        elements[index].numFrames[0].spritids[0] = 37;
-        elements[index].numFrames[0].spritids[1] = 38;
-        elements[index].numFrames[0].spritids[2] = 39;
-        elements[index].numFrames[0].spritids[3] = 40;
+        elements[index].numFrames[0].spritids[0] = 36;
+        elements[index].numFrames[0].spritids[1] = 37;
+        elements[index].numFrames[0].spritids[2] = 38;
+        elements[index].numFrames[0].spritids[3] = 39;
         elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[1].spritids[0] = 41;
-        elements[index].numFrames[1].spritids[1] = 42;
-        elements[index].numFrames[1].spritids[2] = 43;
-        elements[index].numFrames[1].spritids[3] = 44;
+        elements[index].numFrames[1].spritids[0] = 40;
+        elements[index].numFrames[1].spritids[1] = 41;
+        elements[index].numFrames[1].spritids[2] = 42;
+        elements[index].numFrames[1].spritids[3] = 43;
         elements[index].numFrames[1].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[2].spritids[0] = 45;
-        elements[index].numFrames[2].spritids[1] = 46;
-        elements[index].numFrames[2].spritids[2] = 47;
-        elements[index].numFrames[2].spritids[3] = 48;  
+        elements[index].numFrames[2].spritids[0] = 44;
+        elements[index].numFrames[2].spritids[1] = 45;
+        elements[index].numFrames[2].spritids[2] = 46;
+        elements[index].numFrames[2].spritids[3] = 47;  
         elements[index].numFrames[2].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-        elements[index].numFrames[3].spritids[0] = 49;
-        elements[index].numFrames[3].spritids[1] = 50;
-        elements[index].numFrames[3].spritids[2] = 51;
-        elements[index].numFrames[3].spritids[3] = 52;
+        elements[index].numFrames[3].spritids[0] = 48;
+        elements[index].numFrames[3].spritids[1] = 49;
+        elements[index].numFrames[3].spritids[2] = 50;
+        elements[index].numFrames[3].spritids[3] = 51;
         elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
    }
 }
 
 //PROCESS ENEMIES 
-//Note: we can charge the data in this way, because there is no so many enemies x level (MAX 19 elements)
-//more than 20-40 this way would be too ineficcient O(n^3)
+//Note: we can charge the data in this way, because there are no so many enemies by level (MAX 19 elements)
+//more than 40 this way would be too ineficcient O(n^2)
 void processEnemiesLevel() {
 
     UINT8 index_id = 4;
@@ -150,34 +153,34 @@ void processEnemiesLevel() {
 
     for (int i=0; i<elements_map -> numstops; i++) {
         //num groups x stop
-        EMU_printf("NUM group x stop  %d", elements_map->stops[i].groupEnemiesByStop);
-        for (int j=0; j<elements_map->stops[i].groupEnemiesByStop; j++) {
+
+        EMU_printf("NUM enemy x group  %d", elements_map->stops[i].enemiesByStop.num_enemies);
+
+        UINT8 pos_x_enemy = ENEMY_POS_X_INI;
+        UINT8 pos_y_enemy = ENEMY_POS_Y_INI;
+        UINT8 frame_id = NO_VALUE;
+
+
+        for (int j=0; j<elements_map->stops[i].enemiesByStop.num_enemies; j++) {
   
-            UINT8 pos_x_enemy = ENEMY_POS_X_INI;
-            UINT8 pos_y_enemy = ENEMY_POS_Y_INI;
-            UINT8 frame_id = NO_VALUE;
-
-            //num enemies x group
-            for (int k=0; k<elements_map->stops[i].enemiesByStop[j].num_enemies; k++) {
-
-                EMU_printf("NUM enemy x group  %d", elements_map->stops[i].enemiesByStop[j].num_enemies);
-
-                //create enemy element and set in elementList 
-                createEnemyElement(
-                numElements, 
+            //create enemy element and set in elementList 
+            createEnemyElement(
+                currentElements, 
                 pos_x_enemy, 
                 pos_y_enemy, 
-                i, j, k, 
-                elements_map->stops[i].enemiesByStop[j].type_enemy,
+                i, j,
+                elements_map->stops[i].enemiesByStop.type_enemy,
                 index_id, 
                 frame_id);
 
                 pos_x_enemy += ELEMENT_WIDTH;
-                index_id = index_id + 4;                                                        //always there are 4 tiles
-                frame_id = (frame_id + 1) % elements_map->stops[i].enemiesByStop[j].num_frames; //always there are 4 frames max
-                numElements++;                                                                  //max 20 elements in the scenario                                                        
-            }
-
+                index_id = index_id + 4;                                            //always images of 16x16 so 4 8x8 tiles stored in VRAM
+                frame_id++;
+                
+                if (frame_id >= elements_map->stops[i].enemiesByStop.num_frames) {  //always there are 4 frames max
+                    frame_id = NO_VALUE;
+                } 
+                currentElements++;                                                  //max 20 elements in the scenario                                                        
         }
     }
 }
@@ -206,7 +209,6 @@ void moveElement(ElementType *element) {
 
       move_sprite(element->current_index+index_sprite, _x, _y);
    }
-   
 }
 
 
@@ -256,8 +258,7 @@ void setupPlayer() {
    elements[PLAYER_ID].type_shoot = NO_SHOOT;
 
    elements[PLAYER_ID].stop_id = NO_STOP;
-   elements[PLAYER_ID].group_id = NO_GROUP;
-   elements[PLAYER_ID].group_id_index = NO_GROUP_INDEX;
+   elements[PLAYER_ID].enemy_id = NO_GROUP_INDEX;
 
    elements[PLAYER_ID].current_index = 0;               //set index to VRAM tiles
    elements[PLAYER_ID].current_frame = 0;               //index frame
@@ -303,7 +304,7 @@ ElementType *getElement(UINT8 index) {
  * @return BYTE 
  */
 
-UINT8 actionPlayer(UINT16 scroll_x) {
+UINT8 actionPlayer(INT16 scroll_x) {
 
     UINT16 world_x = elements[PLAYER_ID].x + scroll_x;
     UINT16 world_y = elements[PLAYER_ID].y;
@@ -316,30 +317,30 @@ UINT8 actionPlayer(UINT16 scroll_x) {
     if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
         dx = -elements[PLAYER_ID].inc;
         TILE = leftCollisionEnv(world_x - elements[PLAYER_ID].inc, world_y);
-        EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
+        //EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
     }
 
     if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
         dx = elements[PLAYER_ID].inc;
         TILE = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
-        EMU_printf("RIGHT %hx\n",TILE);
+        //EMU_printf("RIGHT %hx\n",TILE);
     }
 
     if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
         dy = -elements[PLAYER_ID].inc;
         TILE = upCollisionEnv(world_x, world_y - elements[PLAYER_ID].inc);
-        EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
+        //EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
     }
 
     if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
         dy = elements[PLAYER_ID].inc;
         TILE = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
-        EMU_printf("DOWN %hx\n",TILE);
+        //EMU_printf("DOWN %hx\n",TILE);
     }
 
     if (dx == 0 && dy == 0) {
         TILE = noMoveCollisionEnv(world_x, world_y, elements[PLAYER_ID].width);
-        EMU_printf("NOMOVE %hx\n",TILE);
+        //EMU_printf("NOMOVE %hx\n",TILE);
     }
 
     elements[PLAYER_ID].x += dx;
@@ -348,8 +349,8 @@ UINT8 actionPlayer(UINT16 scroll_x) {
     return TILE;
 }
 
-
-BYTE processPlayer(UINT16 scroll_x) {
+//PROCESS PLAYER
+BYTE movePlayer(INT16 scroll_x) {
     UINT8 block = actionPlayer(scroll_x);
     BYTE boom = isCollideElement(block);
     if (!boom) {
@@ -359,253 +360,155 @@ BYTE processPlayer(UINT16 scroll_x) {
 }
 
 
+//PLAYER vs 
+UINT8 collidePlayerVSOther() {
+    UINT8 index = 0;
+    BYTE crash = FALSE;
+    for(int i=1; ((i<currentElements) && (!crash)); i++) {
 
-//OLD CODE.
+        crash = isCollisionB2B(elements[PLAYER_ID].x, elements[PLAYER_ID].y,
+                     elements[PLAYER_ID].width, elements[PLAYER_ID].height,
+                     elements[i].x, elements[i].y,
+                     elements[i].width, elements[i].height);
 
-/*
-UBYTE isCollision(UINT16 elem_1_x, UINT16 elem_1_y, UINT16 wall_x, UINT16 wall_y) {
-    return (elem_1_x >= wall_x && elem_1_x <= wall_x + 16) 
-    && (elem_1_y >= wall_y && elem_1_y <= wall_y +  16) 
-    || (wall_x >= elem_1_x && wall_x <= elem_1_x +  16) 
-    && (wall_y >= elem_1_y && wall_y <= elem_1_y +  16);
+        if (crash) {
+            index = i;
+        }
+    }
+    return index;
+} 
+
+
+//COLLIDE EVERYTHING
+BYTE collideElements() {
+    BYTE boom = FALSE;
+    UINT8 index = collidePlayerVSOther();
+    boom = (index > PLAYER_ID);
+    return boom;
+}
+
+//CLEAN ELEMENTS 
+void deleteContent(ElementType *element) {
+
+    element->disabled = TRUE;  
+    element->x = 0;
+    element->y = 0;
+    element->x_world = 0;
+    element->width = 0;
+    element->height = 0;  
+    element->inc = 0;
+    element->lives = 0;
+    element->scores = 0;
+
+    element->current_index = 0; //index image
+    element->current_frame = 0; //index frame
+    element->num_frames = 0;    //num max frames.
+
+    element->type = 0;
+    element->type_shoot = 0;
+    element->stop_id = 0;
+    element->enemy_id = 0;
+
+    for (int index_frame = 0; index_frame < FRAMES; index_frame++) {
+        element->numFrames[index_frame].spritids[0] = 32;
+        element->numFrames[index_frame].spritids[1] = 33;
+        element->numFrames[index_frame].spritids[2] = 34;
+        element->numFrames[index_frame].spritids[3] = 35;
+        element->numFrames[index_frame].num_spritids = 0;
+    }
+}
+
+//CLEAN DATA OF VRAM
+void deleteTiles(int index) {
+
+   move_sprite(index, 0, 0);
+   move_sprite(index+1, 0, 0);
+   move_sprite(index+2, 0, 0);
+   move_sprite(index+3, 0, 0);
+
+   set_sprite_tile(index, 33);
+   set_sprite_tile(index+1, 34);
+   set_sprite_tile(index+2, 35);
+   set_sprite_tile(index+3, 36);
+}
+
+//CLEAN ELEMENTS x STOP
+void cleanEnemyDataByStop(UINT8 currentStopFrame) {
+
+    for(int i=1; i<currentElements; i++) {
+        //type enemy
+        if ((TYPE_ENEMY_PLANET <= elements[i].type) && (elements[i].type <= TYPE_ENEMY_OVNI)) {
+            //current stop
+            if (elements[i].stop_id == currentStopFrame) {
+                deleteTiles(elements[i].current_index);
+                deleteContent(&elements[i]);
+            }
+        }
+    }
+}
+
+//PROCESS ENEMIES
+void moveEnemies() {
+    
+    MovementType *movements = elements_map->stops[currentStopFrame].enemiesByStop.behav_enemy;
+    Coordinate *coords;
+
+    //BEGIN INDEX FROM ONE, BECAUSE 0 is PLAYER.
+    for(int i=1; i<currentElements; i++) {
+        //is enabled
+        if (elements[i].disabled == FALSE) {
+            //is type enemy
+            if ((TYPE_ENEMY_PLANET <= elements[i].type) && (elements[i].type <= TYPE_ENEMY_OVNI)) {
+                //current stop
+                if (elements[i].stop_id == currentStopFrame) {
+                    coords = &movements[currentEnemyFrame].movement[elements[i].enemy_id];
+                    EMU_printf("stop %d, frame %d, enemy %d coord (%d,%d)", currentStopFrame, currentEnemyFrame, elements[i].enemy_id, coords->x, coords->y);
+                    elements[i].x += coords->x;
+                    elements[i].y += coords->y;
+                    moveTileElement(i);
+                }
+            }
+        }
+    }
+    currentEnemyFrame++;
+    if (currentEnemyFrame >= NUMSTEPS) {
+        cleanEnemyDataByStop(currentStopFrame);
+        elements_map->stops[currentStopFrame].processed = TRUE;
+        currentStopFrame = 0;
+        currentEnemyFrame = 0;
+    }
 }
 
 
 
-BYTE is_wall(UINT8 tile) {
-    if(tile == 0xFF) return TRUE;   // fuera = sólido
-    return (tile != 0x7A);         
-}
-
-
-UINT8 get_tile_at_world(UINT16 world_x, UINT16 world_y) {
-
-    //INT16 wx = (world_x / TILE) -1;
-    //INT16 wy = (world_y / TILE) -2;
-
-    INT16 wx = (world_x / TILE_SIZE);
-    INT16 wy = (world_y / TILE_SIZE);
-
-    if (wx < 1 || wy < 2 || wx >= 200 || wy >= 18) {
-        return 0xFF;
-    }
-
-    return background_map_2[wy * MAP_WIDTH_TILE + wx];
-    //return background_map_levelone[wy * MAP_WIDTH_TILE + wx];
-}
-
-BYTE down_collision(UINT16 world_x, UINT16 world_y) {
-
-    return FALSE;
-    
-    UINT16 y = world_y + 15;   // borde inferior del sprite
-    UINT16 x1 = world_x - 7;   // borde izquierdo
-    UINT16 x2 = world_x;       // centro
-    UINT16 x3 = world_x + 7;   // borde derecho
-
-    UINT8 tiles_1 = get_tile_at_world(x1, y);
-    UINT8 tiles_2 = get_tile_at_world(x2, y);
-    UINT8 tiles_3 = get_tile_at_world(x3, y);
-
-    if ((tiles_2 != 0x7A) && (tiles_2 != 0xFF)) {
-       return TRUE;
-    }
-    
-    
-    if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
-       return TRUE;
-    }
-
-    if ((tiles_3 != 0x7A) && (tiles_3 != 0xFF)) {
-        return TRUE;
-    }
-    
-
-    return FALSE;
-}
-
-
-
-BYTE up_collision(UINT16 world_x, UINT16 world_y) {
-
-    return FALSE;
-
-    UINT16 y = world_y - 1;    // borde superior
-    UINT16 x1 = world_x - 7;
-    UINT16 x2 = world_x;
-    UINT16 x3 = world_x + 7;
-
-    UINT8 tiles_1 = get_tile_at_world(x1, y);
-    UINT8 tiles_2 = get_tile_at_world(x2, y);
-    UINT8 tiles_3 = get_tile_at_world(x3, y);
-
-    if ((tiles_2 != 0x7A) && (tiles_2 != 0xFF)) {
-       return TRUE;
-    }
-    
-    if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
-       return TRUE;
-    }
-
-    if ((tiles_3 != 0x7A) && (tiles_3 != 0xFF)) {
-        return TRUE;
-    }
-    
-    return FALSE;
-}
-
-
-
-BYTE left_collision(UINT16 world_x, UINT16 world_y) {
-
-    return FALSE;
-
-    UINT16 x  = world_x - 1;    // borde izquierdo
-    UINT16 y1 = world_y - 7;
-    UINT16 y2 = world_y;
-    UINT16 y3 = world_y + 7;
-
-
-    UINT8 tiles_1 = get_tile_at_world(x, y1);
-    UINT8 tiles_2 = get_tile_at_world(x, y2);
-    UINT8 tiles_3 = get_tile_at_world(x, y3);
-    
-    if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
-       return TRUE;
-    }
-
-    if ((tiles_3 != 0x7A) && (tiles_1 != 0xFF)) {
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
-
-
-
-BYTE right_collision(UINT16 world_x, UINT16 world_y) {
-
-    return FALSE;
-
-   UINT16 x  = world_x + 15;    // borde derecho
-   UINT16 y1 = world_y - 7;
-   UINT16 y2 = world_y;
-   UINT16 y3 = world_y + 7;
-
-
-    UINT8 tiles_1 = get_tile_at_world(x, y1);
-    UINT8 tiles_2 = get_tile_at_world(x, y2);
-    UINT8 tiles_3 = get_tile_at_world(x, y3);
-
-    
-    if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
-       return TRUE;
-    }
-
-    if ((tiles_3 != 0x7A) && (tiles_3 != 0xFF)) {
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
-BYTE nomove_collision(UINT16 world_x, UINT16 world_y) {
-
-  return FALSE;
-
-   UINT16 x  = world_x + 7;    // borde derecho
-   UINT16 y1 = world_y - 7;
-   UINT16 y2 = world_y;
-   UINT16 y3 = world_y + 7;
-
-
-    UINT8 tiles_1 = get_tile_at_world(x, y1);
-    UINT8 tiles_2 = get_tile_at_world(x, y2);
-    UINT8 tiles_3 = get_tile_at_world(x, y3);
-    
-    if ((tiles_1 != 0x7A) && (tiles_1 != 0xFF)) {
-       return TRUE;
-    }
-
-    if ((tiles_3 != 0x7A) && (tiles_3 != 0xFF)) {
-        return TRUE;
-    }
-
-    return FALSE;
-}
-*/
-
-
-
-
-
-
-
-/*
-BYTE movePlayer(UINT16 scroll_x) {
-
-   UINT16 world_x = 0;
-   UINT16 world_y = 0;    
-
-   UINT8 dx = 0;
-   UINT8 dy = 0;
-
-   if (joypad() & J_LEFT && elements[PLAYER_ID].x > 8) {
-       world_x =  elements[PLAYER_ID].x + scroll_x - elements[PLAYER_ID].inc;
-       world_y =  elements[PLAYER_ID].y;
-       if (!left_collision(world_x, world_y)) {
-           dx = -elements[PLAYER_ID].inc;
-       } else {
-           return TRUE;
-       } 
+//INITIALIZE_EVERYTHING
+void cleanElementData()  {
+   for (int index = 1; index<NUMELEMENTS; index++) {
+        deleteContent(&elements[index]);
    }
-
-   if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < 168) {
-       world_x =  elements[PLAYER_ID].x + scroll_x + elements[PLAYER_ID].inc;
-       world_y =  elements[PLAYER_ID].y;
-       if (!right_collision(world_x, world_y)) {
-           dx =  elements[PLAYER_ID].inc;
-       } else {
-           return TRUE;
-      } 
-   } 
-
-   if (joypad() & J_UP && elements[PLAYER_ID].y > 16) {
-       world_x = elements[PLAYER_ID].x;
-       world_y = elements[PLAYER_ID].y - elements[PLAYER_ID].inc;
-       if (!up_collision(world_x, world_y)) {
-           dy = -elements[PLAYER_ID].inc;
-       } else {
-           return TRUE;
-       } 
-       
-   }
-
-   if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < 152) {
-      
-       world_x = elements[PLAYER_ID].x;
-       world_y = elements[PLAYER_ID].y + elements[PLAYER_ID].inc;
-       if (!down_collision(world_x, world_y)) {
-          dy = elements[PLAYER_ID].inc;
-       } else {
-          return TRUE;
-       } 
-   }
-
-   world_x = elements[PLAYER_ID].x + scroll_x;
-   world_y = elements[PLAYER_ID].y;
-
-   if (nomove_collision(world_x, world_y)) {
-       return TRUE; 
-   }
-        
-   elements[PLAYER_ID].x += dx;
-   elements[PLAYER_ID].y += dy;
-
- 
-    moveTilePlayer();
-
-    return FALSE;
 }
-*/
+
+//STOP SCROLLING
+BYTE stopScrolling(INT16 scroll_x) {
+    BYTE stopScroll = FALSE;
+
+    if (scroll_x < 0) {
+        return FALSE;
+    }
+
+    UINT8 i = 0;
+
+    while ((i < elements_map->numstops) && (!stopScroll)) {
+        if (elements_map->stops[i].processed == FALSE) {
+            //EMU_printf("stop %d scroll_x %d", elements_map->stops[i].stop, scroll_x);
+            if (elements_map->stops[i].stop <= scroll_x) {
+                stopScroll = TRUE;
+                currentStopFrame = i;
+            }
+        }
+        i++;
+    }      
+    
+
+    return stopScroll;
+}

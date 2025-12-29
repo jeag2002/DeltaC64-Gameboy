@@ -55,7 +55,6 @@ void fadein(){
 }
 
 //MAIN
-
 void main(){
    processSplash();
    fadeout();  

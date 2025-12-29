@@ -1,1 +1,1 @@
-y\workspace-final-2\main_1.gb
+final-2\main_1.gb

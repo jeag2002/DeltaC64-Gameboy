@@ -12,7 +12,21 @@ void loadElementsForLevel(int level);
 void processEnemiesLevel();
 
 //PLAYER ACTIONS (MOVE/SHOOT)
-BYTE processPlayer(UINT16 scroll_x);
+BYTE movePlayer(INT16 scroll_x);
+
+//CLEAN ENEMIES
+void cleanElementData();
+
+//MOVE ENEMIES
+void moveEnemies();
+
+//COLLIDE PLAYER VS ENEMIES/ENEMIES SHOOTS
+BYTE collideElements();
+
+
+
+//STOP SCROLLING
+BYTE stopScrolling(INT16 scroll_x);
 
 //MOVE TILES OF A FRAME OF AN ELEMENT
 void setTilesElement(ElementType *element);

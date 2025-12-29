@@ -13,7 +13,7 @@
 #include "world.h"
 
 
-UINT16 scroll_x = -1;
+INT16 scroll_x = -1;
 
 unsigned char hud_line[20] = {
     0x1D,0x0D,0x19,0x1C,0x0F,0x00,  // SCORE
@@ -57,7 +57,7 @@ void incWorldScroll() {
 }
 
 //GET WORLD SCROLL
-UINT16 getWorldScroll() {
+INT16 getWorldScroll() {
     return scroll_x;
 }
 
@@ -74,7 +74,7 @@ void launchLevel(int level) {
     set_bkg_data(0, 123, tile_background_map);
 
     //SPRITES
-    set_sprite_data(0, 78, sprites_videogame);
+    set_sprite_data(0, 92, sprites_videogame);
 
     //HUD
     /////////////////////////////////////////////////

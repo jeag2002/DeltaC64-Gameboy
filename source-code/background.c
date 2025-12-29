@@ -87,7 +87,6 @@ UINT8 obtain_tile_background(UINT16 x_world, UINT16 y) {
 }
 
 
-
 void reinit_starfield(Star *starts, UINT16 scroll_x) {
 
     starts->x_screen = rand() % ((SCREEN_WIDTH - 2) - (SCREEN_WIDTH - 10)) + (SCREEN_WIDTH - 10);
