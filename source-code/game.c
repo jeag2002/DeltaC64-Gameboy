@@ -28,6 +28,8 @@ void run() {
     ElementType *player = getElement(PLAYER_ID);
 
     UINT8 enemy_timer = 0;
+    UINT8 bullet_timer = 0;
+
 
     while ((!END_GAME_BG) && (!END_GAME_FG) && (!END_LEVEL)){
 
@@ -47,6 +49,13 @@ void run() {
             }
             //CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE FOREGROUND
             END_GAME_FG = collideElements();
+        }
+
+        //MOVE BULLETS
+        if (++bullet_timer == 4) {
+            bullet_timer = 0;
+            performantDelay(STEP);
+            moveBullets(getWorldScroll());
         }
 
         //PROCESS FRAME LEVEL. CHECK IF END

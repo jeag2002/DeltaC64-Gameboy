@@ -5,29 +5,73 @@
 #include <stdint.h>
 #include "global.h"
 
-//SET OTHER ELEMENTS INTO THE LEVEL.
-void loadElementsForLevel(int level);
 
-//SET ENEMIES INTO THE LEVEL.
+//////////////////////////////////// ENEMIES /////////////////////////////////
+
+//CREATE ENEMY IN THE ELEMENT COLLECTION
+void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id);
+
+//SET ENEMIES DATA FROM WORLD CONFIGURATION TO LEVEL.
 void processEnemiesLevel();
-
-//PLAYER ACTIONS (MOVE/SHOOT)
-BYTE movePlayer(INT16 scroll_x);
 
 //CLEAN ENEMIES
 void cleanElementData();
 
+//CLEAN ELEMENTS x STOP
+void cleanEnemyDataByStop(UINT8 currentStopFrame);
+
 //MOVE ENEMIES
 void moveEnemies();
 
+
+///////////////////////////////// BULLETS ////////////////////////////////////
+
+//MOVE BULLETS, DETECT COLLISIONS
+void moveBullets(INT16 scroll_x);
+
+//CREATE BULLET INTO ELEMENTS COLLECTION
+void createShootInternal(UINT8 index, UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc,  UINT8 type, UINT8 type_shoot, UINT8 indexVRAM);
+
+//FIND ELEMENT BUCKET FREE FOR A NEW BULLET INTO ELEMENTS COLLECTION
+void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc, UINT8 type, UINT8 type_shoot);
+
+//CREATE BULLET
+void createShoot(INT16 scroll_x);
+
+//DEFINE A DELAY BETWEEN BULLETS
+void timeCreateShoot(INT16 scroll_x);
+
+
+///////////////////////// PLAYER /////////////////////////////////
+
+//ACTION (MOVEMENT/SHOOT) PLAYER
+UINT8 actionPlayer(INT16 scroll_x);
+
+//MOVE PLAYER + COLLISIONS
+BYTE movePlayer(INT16 scroll_x);
+
+//CREATE PLAYER
+void setupPlayer();
+
+
+/////////////////////// GENERAL TOOLS //////////////////////////////////
+
+////////////////////////// COLLISIONS BETWEEN ELEMENTS //////////////////
 //COLLIDE PLAYER VS ENEMIES/ENEMIES SHOOTS
 BYTE collideElements();
 
+//COLLIDE ELEMENTS VS OTHERS
+UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex);
 
 
+
+////////////////////////// SCROLLING ////////////////////////////////
 //STOP SCROLLING
 BYTE stopScrolling(INT16 scroll_x);
 
+
+
+///////////////////////// MANAGING TILES ///////////////////////////////
 //MOVE TILES OF A FRAME OF AN ELEMENT
 void setTilesElement(ElementType *element);
 
@@ -37,11 +81,21 @@ void moveElement(ElementType *element);
 //MOVE FRAME->TILES OF A ELEMENT.
 void moveTileElement(UINT8 index);
 
-//CREATE PLAYER
-void setupPlayer();
-
 //GET ELEMENT BY ID
 ElementType *getElement(UINT8 index);
+
+//SET OTHER ELEMENTS INTO THE LEVEL.
+void loadElementsForLevel(int level);
+
+
+////////////////////// CLEAN CONTEXT ///////////////////////////////
+//CLEAN ELEMENTTYPE
+void deleteContent(ElementType *element);
+
+//CLEAN DATA OF VRAM
+void deleteTiles(int index);
+
+
 
 
 #endif

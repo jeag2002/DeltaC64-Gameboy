@@ -34,6 +34,8 @@
 
 //NUM ELEMENTS BUFFER
 #define NUMELEMENTS 20
+#define OVERLIMITELEMENT 21
+#define MAXVRAMDEFINITION 36
 
 //ID PLAYER_ID
 #define PLAYER_ID 0
@@ -137,6 +139,12 @@
 #define TYPE_ENEMY_STAR 12
 #define TYPE_ENEMY_OVNI 13
 
+
+//TYPE SHOOT PLAYER 
+#define TYPE_SHOOT_PLAYER_ONE 21       //type shoot one
+#define TYPE_SHOOT_PLAYER_TWO 22       //type shoot two
+#define TYPE_SHOOT_PLAYER_THREE 23     //type shoot three
+#define TYPE_SHOOT_PLAYER_SPECIAL 24   //type shoot special
 
 
 
