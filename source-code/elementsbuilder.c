@@ -25,7 +25,9 @@ void loadElementsForLevel(int level) {
     setCollBoundaries(level);
     //set elements map
     elements_map = buildLevelEnemiesFromIndex(level);
-    processEnemiesLevel();
+    //num stops
+    EMU_printf("NUM stops %d", elements_map -> numstops);
+    //processEnemiesLevel();
 }
 
 //SET ENEMY in elements collection.
@@ -144,47 +146,45 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
 //PROCESS ENEMIES 
 //Note: we can charge the data in this way, because there are no so many enemies by level (MAX 19 elements)
 //more than 40 this way would be too ineficcient O(n^2)
-void processEnemiesLevel() {
+void processEnemiesLevel(UINT8 stopFrame) {
 
     UINT8 index_id = 4;
     UINT8 numElements = 1;
 
-    //num stops
-    EMU_printf("NUM stops %d", elements_map -> numstops);
-
-    for (int i=0; i<elements_map -> numstops; i++) {
+    //for (int i=0; i<elements_map -> numstops; i++) {
         //num groups x stop
 
-        EMU_printf("NUM enemy x group  %d", elements_map->stops[i].enemiesByStop.num_enemies);
+    if (stopFrame < elements_map -> numstops) {
+        EMU_printf("STOP %d enemy x group  %d", stopFrame, elements_map->stops[stopFrame].enemiesByStop.num_enemies);
 
         UINT8 pos_x_enemy = ENEMY_POS_X_INI;
         UINT8 pos_y_enemy = ENEMY_POS_Y_INI;
         UINT8 frame_id = NO_VALUE;
 
 
-        for (int j=0; j<elements_map->stops[i].enemiesByStop.num_enemies; j++) {
+        for (int j=0; j<elements_map->stops[stopFrame].enemiesByStop.num_enemies; j++) {
   
             //create enemy element and set in elementList 
             createEnemyElement(
                 numElements, 
                 pos_x_enemy, 
                 pos_y_enemy, 
-                i, j,
-                elements_map->stops[i].enemiesByStop.type_enemy,
+                stopFrame, j,
+                elements_map->stops[stopFrame].enemiesByStop.type_enemy,
                 index_id, 
                 frame_id);
 
                 numElements++;
 
                 pos_x_enemy += ELEMENT_WIDTH;
-                index_id = index_id + 4;                                            //always images of 16x16 so 4 8x8 tiles stored in VRAM
+                index_id = index_id + 4;                                                          //always images of 16x16 so 4 8x8 tiles stored in VRAM
                 frame_id++;
-                
-                if (frame_id >= elements_map->stops[i].enemiesByStop.num_frames) {  //always there are 4 frames max
+                if (frame_id >= elements_map->stops[stopFrame].enemiesByStop.num_frames) {  //always there are 4 frames max
                     frame_id = NO_VALUE;
                 }                                                    
         }
     }
+    //}
 }
 
 
@@ -309,6 +309,7 @@ UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) {
                         elements[i].width, elements[i].height);
 
             if (crash) {
+                EMU_printf("COLLISION type %d vs %d type %d",element->type, i, elements[i].type);
                 index = i;
                 break;
             }
@@ -342,7 +343,7 @@ void moveBullets(INT16 scroll_x) {
 
                 if (index != OVERLIMITELEMENT) {
                     //destroy bullet
-                    EMU_printf("5)bullet %d collision %d", i, index);
+                    EMU_printf("5)COLLISION bullet %d collision %d", i, index);
 
                     //deleteTiles(elements[i].current_index);
                     //currentIndex = elements[i].current_index;
@@ -383,7 +384,7 @@ void moveBullets(INT16 scroll_x) {
                     //COLL AGAINST WORLD
                     if (isCollideElement(TILE)) {
                         //collision against other tile of the world
-                        EMU_printf("6)bullet %d collision background %x",i,TILE);
+                        EMU_printf("6)COLLISION bullet %d background %x",i,TILE);
 
                         //deleteTiles(elements[i].current_index);
                         //currentIndex = elements[i].current_index;
@@ -395,7 +396,7 @@ void moveBullets(INT16 scroll_x) {
                     //OUT OF SCREEN
                     } else if ((LIMIT_BOUNDARY_X_INF >= elements[i].x) || (elements[i].x >= LIMIT_BOUNDARY_X_SUP)) {
 
-                        EMU_printf("7)bullet %d out of bondaries %d", i, elements[i].x);
+                        EMU_printf("7)COLLISION bullet %d out of boundaries %d", i, elements[i].x);
                         //out of screen
 
                         //deleteTiles(elements[i].current_index);
@@ -531,11 +532,11 @@ void createShoot(INT16 scroll_x) {
     if (elements[PLAYER_ID].type_shoot == TYPE_SHOOT_PLAYER_ONE) {
         //type normal x 1
         createShootElement(
-        elements[PLAYER_ID].x,
+        elements[PLAYER_ID].x + TILE_SIZE,
         elements[PLAYER_ID].y + 4,
         elements[PLAYER_ID].width,
         scroll_x,
-        2,
+        5,
         TYPE_SHOOT_PLAYER,
         TYPE_SHOOT_PLAYER_ONE 
         );
@@ -546,11 +547,11 @@ void createShoot(INT16 scroll_x) {
     }*/ else {
         //type special
         createShootElement(
-        elements[PLAYER_ID].x,
+        elements[PLAYER_ID].x + TILE_SIZE,
         elements[PLAYER_ID].y,
         elements[PLAYER_ID].width,
         scroll_x,
-        2,
+        5,
         TYPE_SHOOT_PLAYER,
         TYPE_SHOOT_PLAYER_SPECIAL 
         );
@@ -585,25 +586,25 @@ UINT8 actionPlayer(INT16 scroll_x) {
     if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
         dx = -elements[PLAYER_ID].inc;
         TILE = leftCollisionEnv(world_x - elements[PLAYER_ID].inc, world_y);
-        EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
+        //EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
     }
 
     if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
         dx = elements[PLAYER_ID].inc;
         TILE = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
-        EMU_printf("RIGHT %hx\n",TILE);
+        //EMU_printf("RIGHT %hx\n",TILE);
     }
 
     if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
         dy = -elements[PLAYER_ID].inc;
         TILE = upCollisionEnv(world_x, world_y - elements[PLAYER_ID].inc);
-        EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
+        //EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
     }
 
     if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
         dy = elements[PLAYER_ID].inc;
         TILE = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
-        EMU_printf("DOWN %hx\n",TILE);
+        //EMU_printf("DOWN %hx\n",TILE);
     }
 
     if (joypad() & J_A) {
@@ -612,7 +613,7 @@ UINT8 actionPlayer(INT16 scroll_x) {
 
     if (dx == 0 && dy == 0) {
         TILE = noMoveCollisionEnv(world_x, world_y, elements[PLAYER_ID].width);
-        EMU_printf("NOMOVE %hx\n",TILE);
+        //EMU_printf("NOMOVE %hx\n",TILE);
     }
 
     elements[PLAYER_ID].x += dx;
@@ -636,7 +637,11 @@ BYTE movePlayer(INT16 scroll_x) {
 BYTE collideElements() {
     BYTE boom = FALSE;
     UINT8 index = collideElementVSOther(&elements[PLAYER_ID], PLAYER_ID);
-    boom = (index != OVERLIMITELEMENT);
+    if  (index != OVERLIMITELEMENT) {
+         if (elements[index].type != TYPE_SHOOT_PLAYER) {
+            boom = TRUE;
+         }
+    }
     return boom;
 }
 
@@ -759,6 +764,10 @@ BYTE stopScrolling(INT16 scroll_x) {
             if (elements_map->stops[i].stop <= scroll_x) {
                 stopScroll = TRUE;
                 currentStopFrame = i;
+                if (elements_map->stops[i].processedEnemies == FALSE) {
+                    processEnemiesLevel(currentStopFrame);
+                    elements_map->stops[i].processedEnemies = TRUE;
+                }
             }
         }
         i++;

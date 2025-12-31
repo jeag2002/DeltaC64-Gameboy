@@ -12,7 +12,7 @@
 void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id);
 
 //SET ENEMIES DATA FROM WORLD CONFIGURATION TO LEVEL.
-void processEnemiesLevel();
+void processEnemiesLevel(UINT8 currentStopFrame);
 
 //CLEAN ENEMIES
 void cleanElementData();

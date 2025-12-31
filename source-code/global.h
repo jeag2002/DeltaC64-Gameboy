@@ -215,6 +215,7 @@ typedef struct {
 typedef struct {
     INT16 stop;
     BYTE processed;
+    BYTE processedEnemies;
     EnemyGroupType enemiesByStop;
 } EnemyEntryType;
 

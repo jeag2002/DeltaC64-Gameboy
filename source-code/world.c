@@ -23,6 +23,7 @@ LevelType *buildLevelEnemiesLevelOne () {
 
     level_1.stops[0].stop = 327;
     level_1.stops[0].processed = FALSE;
+    level_1.stops[0].processedEnemies = FALSE;
     level_1.stops[0].enemiesByStop.num_enemies = 4;
     level_1.stops[0].enemiesByStop.type_enemy = TYPE_ENEMY_OVNI;
     level_1.stops[0].enemiesByStop.num_frames = 4;
@@ -31,8 +32,9 @@ LevelType *buildLevelEnemiesLevelOne () {
 
     level_1.stops[1].stop = 327;
     level_1.stops[1].processed = FALSE;
+    level_1.stops[0].processedEnemies = FALSE;
     level_1.stops[1].enemiesByStop.num_enemies = 4;
-    level_1.stops[1].enemiesByStop.type_enemy = TYPE_ENEMY_OVNI;
+    level_1.stops[1].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
     level_1.stops[1].enemiesByStop.num_frames = 4;
     level_1.stops[1].enemiesByStop.steps = NUMSTEPS;
     level_1.stops[1].enemiesByStop.behav_enemy = movementMountainDown;

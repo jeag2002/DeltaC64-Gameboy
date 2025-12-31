@@ -47,9 +47,10 @@ void run() {
                 enemy_timer = 0;
                 moveEnemies();  
             }
-            //CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE FOREGROUND
-            END_GAME_FG = collideElements();
         }
+
+        //CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE FOREGROUND
+        END_GAME_FG = collideElements();
 
         //MOVE BULLETS
         if (++bullet_timer == 4) {
