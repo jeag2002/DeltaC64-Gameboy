@@ -19,7 +19,8 @@ unsigned char *getLevelFromIndex(int index) {
 LevelType *buildLevelEnemiesLevelOne () {
     
     level_1.id = LEVEL_1_INDEX;
-    level_1.numstops = 2;
+    //level_1.numstops = 2;
+    level_1.numstops = 3;
 
     level_1.stops[0].stop = 327;
     level_1.stops[0].processed = FALSE;
@@ -32,12 +33,23 @@ LevelType *buildLevelEnemiesLevelOne () {
 
     level_1.stops[1].stop = 327;
     level_1.stops[1].processed = FALSE;
-    level_1.stops[0].processedEnemies = FALSE;
+    level_1.stops[1].processedEnemies = FALSE;
     level_1.stops[1].enemiesByStop.num_enemies = 4;
     level_1.stops[1].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
     level_1.stops[1].enemiesByStop.num_frames = 4;
     level_1.stops[1].enemiesByStop.steps = NUMSTEPS;
     level_1.stops[1].enemiesByStop.behav_enemy = movementMountainDown;
+
+    
+    level_1.stops[2].stop = 800;
+    level_1.stops[2].processed = FALSE;
+    level_1.stops[2].processedEnemies = FALSE;
+    level_1.stops[2].enemiesByStop.num_enemies = 4;
+    level_1.stops[2].enemiesByStop.type_enemy = TYPE_ENEMY_SQUARE;
+    level_1.stops[2].enemiesByStop.num_frames = 4;
+    level_1.stops[2].enemiesByStop.steps = NUMSTEPS_1;
+    level_1.stops[2].enemiesByStop.behav_enemy = movementUpRotationDown;
+    
 
 
     return &level_1;

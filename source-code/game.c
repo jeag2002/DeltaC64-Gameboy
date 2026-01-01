@@ -35,7 +35,7 @@ void run() {
 
         wait_vbl_done();
         
-        //MOVE PLAYER. CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE BACKGROUND
+        //MOVE PLAYER. CRASH IF SOMETHING HAPPENED WHEN PLAYER INTERACT WITH THE BACKGROUND
         END_GAME_BG = movePlayer(getWorldScroll());
 
         if (!stopScrolling(getWorldScroll())) {
@@ -49,7 +49,7 @@ void run() {
             }
         }
 
-        //CRASH IF SOMETHING HAPPENED WHEN INTERACT WITH THE FOREGROUND
+        //CRASH IF SOMETHING HAPPENED WHEN PLAYER INTERACT WITH THE FOREGROUND
         END_GAME_FG = collideElements();
 
         //MOVE BULLETS

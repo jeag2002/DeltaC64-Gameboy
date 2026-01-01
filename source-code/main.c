@@ -31,7 +31,7 @@ void fadeout(){
              BGP_REG = 0xFF;
              break;
       }
-      performantdelay(10);
+      performantdelay(20);
 
    }
 }
@@ -50,7 +50,7 @@ void fadein(){
              BGP_REG = 0xE4;
              break;
       }
-      performantdelay(10);
+      performantdelay(20);
    }
 }
 

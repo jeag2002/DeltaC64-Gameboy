@@ -64,6 +64,29 @@ const unsigned char level_end_spr_tiles[LEVEL_END_LEN * 16] = {
 
 };
 
+
+const unsigned char game_over_spr_tiles[LEVEL_ONE_LEN * 16] = {
+    // 'G'
+    126,0,  128,0,  128,0,  142,0,  129,0,  129,0,  126,0,  0,0,
+    // 'A'
+    56,0,   68,0,   124,0,  68,0,   68,0,   68,0,   68,0,   0,0,
+    // 'M'
+    195,0,  165,0,  153,0,  129,0,  129,0,  129,0,  129,0,  0,0,
+    // 'E'
+    255,0,  128,0,  128,0,  255,0,  128,0,  128,0,  255,0,  0,0,
+    // ESPACIO
+    0,0,    0,0,    0,0,    0,0,    0,0,    0,0,    0,0,    0,0,
+    // 'O'
+    255,0,  129,0,  129,0,  129,0,  129,0,  129,0,  255,0,  0,0,  
+    // 'V'
+    129,0,  129,0,  66,0,   66,0,   36,0,   36,0,   24,0,   0,0,
+    // 'E'
+    255,0,  128,0,  128,0,  255,0,  128,0,  128,0,  255,0,  0,0,
+    // 'R'
+    120,0,  68,0,   120,0,  68,0,   68,0,   68,0,   68,0,   0,0
+
+};
+
 // Texto "LEVEL ONE" → índices de tiles
 //const UINT8 msg_map[] = { 0,1,2,1,0,6,3,4,5 };
 
@@ -93,6 +116,22 @@ void show_level_end_msg() {
 
      // Cargar data de sprites para START
     set_sprite_data(MSG_SPRITE_BASE, LEVEL_ONE_LEN, level_end_spr_tiles);
+
+    // Asignar tiles a 5 sprites consecutivos y colocarlos
+    for (uint8_t i = 0; i < LEVEL_ONE_LEN; i++) {
+        set_sprite_tile(i, MSG_SPRITE_BASE + i);
+        set_sprite_prop(i, SPR_PAL(0));  
+        move_sprite(i, (uint8_t)(x_px + (i * 8) + 2), y_px);
+    }
+}
+
+void show_game_over_msg() {
+
+    UINT8 x_px = MSG_X_START;
+    UINT8 y_px = MSG_Y;
+
+     // Cargar data de sprites para START
+    set_sprite_data(MSG_SPRITE_BASE, LEVEL_ONE_LEN, game_over_spr_tiles);
 
     // Asignar tiles a 5 sprites consecutivos y colocarlos
     for (uint8_t i = 0; i < LEVEL_ONE_LEN; i++) {

@@ -2,6 +2,7 @@
 #include "global.h"
 #include "world.h"
 #include "collisions.h"
+#include "captions.h"
 #include <stdio.h>
 #include <gb/gb.h>
 #include <gb/emu_debug.h>
@@ -140,6 +141,36 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
         elements[index].numFrames[3].spritids[2] = 50;
         elements[index].numFrames[3].spritids[3] = 51;
         elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+
+   } else if (type_enemy == TYPE_ENEMY_SQUARE) {
+
+        elements[index].current_frame = frame_id;       //index frame
+        elements[index].num_frames = NUM_FRAMES_PLAYER; //num max frames.
+
+        elements[index].numFrames[0].spritids[0] = 76;
+        elements[index].numFrames[0].spritids[1] = 77;
+        elements[index].numFrames[0].spritids[2] = 78;
+        elements[index].numFrames[0].spritids[3] = 79;
+        elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+
+        elements[index].numFrames[1].spritids[0] = 80;
+        elements[index].numFrames[1].spritids[1] = 81;
+        elements[index].numFrames[1].spritids[2] = 82;
+        elements[index].numFrames[1].spritids[3] = 83;
+        elements[index].numFrames[1].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+
+        elements[index].numFrames[2].spritids[0] = 84;
+        elements[index].numFrames[2].spritids[1] = 85;
+        elements[index].numFrames[2].spritids[2] = 86;
+        elements[index].numFrames[2].spritids[3] = 87;  
+        elements[index].numFrames[2].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+
+        elements[index].numFrames[3].spritids[0] = 88;
+        elements[index].numFrames[3].spritids[1] = 89;
+        elements[index].numFrames[3].spritids[2] = 90;
+        elements[index].numFrames[3].spritids[3] = 91;
+        elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+
    }
 }
 
@@ -177,9 +208,9 @@ void processEnemiesLevel(UINT8 stopFrame) {
                 numElements++;
 
                 pos_x_enemy += ELEMENT_WIDTH;
-                index_id = index_id + 4;                                                          //always images of 16x16 so 4 8x8 tiles stored in VRAM
+                index_id = index_id + 4;                                                   //always images of 16x16 so 4 8x8 tiles stored in VRAM
                 frame_id++;
-                if (frame_id >= elements_map->stops[stopFrame].enemiesByStop.num_frames) {  //always there are 4 frames max
+                if (frame_id >= elements_map->stops[stopFrame].enemiesByStop.num_frames) { //always there are 4 frames max
                     frame_id = NO_VALUE;
                 }                                                    
         }
@@ -369,6 +400,17 @@ void moveBullets(INT16 scroll_x) {
                             deleteData[indexDeleteData] = index;
                             indexDeleteData++;    
                         }
+
+                        //ADD ONE TO THE SCORE OF THE PLAYER
+                        if (((elements[i].type == TYPE_SHOOT_PLAYER) 
+                        && (elements[index].type >= TYPE_ENEMY_PLANET) 
+                        && (elements[index].type <= TYPE_ENEMY_SQUARE)) || 
+                        ((elements[i].type >= TYPE_ENEMY_PLANET)
+                        && (elements[i].type <= TYPE_ENEMY_SQUARE)
+                        && (elements[index].type == TYPE_SHOOT_PLAYER))) {
+                            elements[0].scores = elements[0].scores + 1;
+                        }
+
 
                         //deleteTiles(elements[index].current_index);
                         //currentIndex = elements[index].current_index;
@@ -628,6 +670,10 @@ BYTE movePlayer(INT16 scroll_x) {
     BYTE boom = isCollideElement(block);
     if (!boom) {
         moveTileElement(PLAYER_ID);
+    } else {
+        show_game_over_msg();
+        wait_frames_level_one(50);
+        hide_msg(); 
     }
     return boom;
 }
@@ -642,6 +688,13 @@ BYTE collideElements() {
             boom = TRUE;
          }
     }
+
+    if (boom) {
+        show_game_over_msg();
+        wait_frames_level_one(50);
+        hide_msg(); 
+    }
+
     return boom;
 }
 
@@ -695,7 +748,7 @@ void cleanEnemyDataByStop(UINT8 currentStopFrame) {
 
     for(int i=1; i<NUMELEMENTS; i++) {
         //type enemy
-        if ((TYPE_ENEMY_PLANET <= elements[i].type) && (elements[i].type <= TYPE_ENEMY_OVNI)) {
+        if ((TYPE_ENEMY_PLANET <= elements[i].type) && (elements[i].type <= TYPE_ENEMY_SQUARE)) {
             //current stop
             if (elements[i].stop_id == currentStopFrame) {
                 deleteTiles(elements[i].current_index);
@@ -719,7 +772,7 @@ void moveEnemies() {
         //is enabled
         if (elements[i].disabled == FALSE) {
             //is type enemy
-            if ((TYPE_ENEMY_PLANET <= elements[i].type) && (elements[i].type <= TYPE_ENEMY_OVNI)) {
+            if ((TYPE_ENEMY_PLANET <= elements[i].type) && (elements[i].type <= TYPE_ENEMY_SQUARE)) {
                 //current stop
                 if (elements[i].stop_id == currentStopFrame) {
                     coords = &movements[currentEnemyFrame].movement[elements[i].enemy_id];
@@ -731,7 +784,7 @@ void moveEnemies() {
         }
     }
     currentEnemyFrame++;
-    if (currentEnemyFrame >= NUMSTEPS) {
+    if (currentEnemyFrame >= elements_map->stops[currentStopFrame].enemiesByStop.steps) {
         cleanEnemyDataByStop(currentStopFrame);
         elements_map->stops[currentStopFrame].processed = TRUE;
         currentStopFrame = 0;
@@ -751,7 +804,6 @@ void cleanElementData()  {
 //STOP SCROLLING
 BYTE stopScrolling(INT16 scroll_x) {
     BYTE stopScroll = FALSE;
-
     
     if (scroll_x < 0) {
         return FALSE;
