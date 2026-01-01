@@ -211,6 +211,8 @@ typedef struct {
     UINT8 type_enemy;
     UINT8 num_frames;
     UINT8 steps;
+    UINT8 iniposx;
+    UINT8 iniposy;
     MovementType *behav_enemy;
 } EnemyGroupType;
 

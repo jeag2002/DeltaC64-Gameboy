@@ -29,6 +29,8 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[0].enemiesByStop.type_enemy = TYPE_ENEMY_OVNI;
     level_1.stops[0].enemiesByStop.num_frames = 4;
     level_1.stops[0].enemiesByStop.steps = NUMSTEPS;
+    level_1.stops[0].enemiesByStop.iniposx = ENEMY_POS_X_INI;
+    level_1.stops[0].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
     level_1.stops[0].enemiesByStop.behav_enemy = movementMountainUp;
 
     level_1.stops[1].stop = 327;
@@ -38,6 +40,8 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[1].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
     level_1.stops[1].enemiesByStop.num_frames = 4;
     level_1.stops[1].enemiesByStop.steps = NUMSTEPS;
+    level_1.stops[1].enemiesByStop.iniposx = ENEMY_POS_X_INI;
+    level_1.stops[1].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
     level_1.stops[1].enemiesByStop.behav_enemy = movementMountainDown;
 
     
@@ -48,6 +52,8 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[2].enemiesByStop.type_enemy = TYPE_ENEMY_SQUARE;
     level_1.stops[2].enemiesByStop.num_frames = 4;
     level_1.stops[2].enemiesByStop.steps = NUMSTEPS_1;
+    level_1.stops[2].enemiesByStop.iniposx = ENEMY_POS_X_INI;
+    level_1.stops[2].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
     level_1.stops[2].enemiesByStop.behav_enemy = movementUpRotationDown;
     
 

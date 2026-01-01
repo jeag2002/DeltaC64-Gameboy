@@ -188,8 +188,8 @@ void processEnemiesLevel(UINT8 stopFrame) {
     if (stopFrame < elements_map -> numstops) {
         EMU_printf("STOP %d enemy x group  %d", stopFrame, elements_map->stops[stopFrame].enemiesByStop.num_enemies);
 
-        UINT8 pos_x_enemy = ENEMY_POS_X_INI;
-        UINT8 pos_y_enemy = ENEMY_POS_Y_INI;
+        UINT8 pos_x_enemy = elements_map->stops[stopFrame].enemiesByStop.iniposx;
+        UINT8 pos_y_enemy = elements_map->stops[stopFrame].enemiesByStop.iniposy;
         UINT8 frame_id = NO_VALUE;
 
 
