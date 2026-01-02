@@ -87,6 +87,7 @@ void launchLevel(int level) {
     move_win(7,135);
     //////////////////////////////////////////////////
  
+    scroll_x = -1;
           
     SHOW_BKG;
     SHOW_SPRITES;

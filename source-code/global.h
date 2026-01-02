@@ -1,6 +1,8 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
 
+#include <gb/gb.h>
+
 //SCREEN BOUNDARIES
 #define LIMIT_BOUNDARY_X_INF 8
 #define LIMIT_BOUNDARY_X_SUP 168 
@@ -230,5 +232,11 @@ typedef struct {
 } LevelType;
 
 ///////////////////////////////////////////////////////////
+
+void clear_bkg_screen();
+void performantGeneralDelay(UINT8 numloop);
+void fadeout();
+void fadein();
+
 
 #endif

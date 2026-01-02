@@ -125,27 +125,34 @@ void show_start_sprites(uint8_t x_px, uint8_t y_px) {
 }
 
 void processSplash() {
-    // --- 1) Cargar tu splash en BG ---
+    
+    DISPLAY_OFF;
+    HIDE_BKG;
+    HIDE_WIN;
+    HIDE_SPRITES;
+    
     set_bkg_data(0, 114, delta_3_4_data);
     set_bkg_tiles(0, 0, 20, 18, delta_3_4_map);
+
 
     OBP0_REG = 0xE0; // 11 10 00 00  => col3 negro, col2 gris oscuro, col1 blanco, col0 blanco(transparente)
     OBP1_REG = 0xE4;
 
-
     // --- 2) Config de pantalla ---
-    DISPLAY_OFF;            // cambio de registros seguro
+                // cambio de registros seguro
     SHOW_BKG;
     SHOW_SPRITES;
     SPRITES_8x8;            // usamos sprites 8x8
     DISPLAY_ON;
 
+    // --- 1) Cargar tu splash en BG ---
+    
+    
+
     // --- 3) Paleta de sprites para "blanco" (DMG) ---
     // OBP0: bits [7:6]=color3, [5:4]=color2, [3:2]=color1, [1:0]=color0
     // 0=blanco, 1=gris claro, 2=gris oscuro, 3=negro
     // Ponemos color1 -> blanco (00). Color0 es transparente, así que da igual.
-
-
 
 
     // --- 4) Colocar "START" por encima del splash ---

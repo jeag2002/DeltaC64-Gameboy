@@ -37,7 +37,7 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[1].processed = FALSE;
     level_1.stops[1].processedEnemies = FALSE;
     level_1.stops[1].enemiesByStop.num_enemies = 4;
-    level_1.stops[1].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
+    level_1.stops[1].enemiesByStop.type_enemy = TYPE_ENEMY_OVNI;
     level_1.stops[1].enemiesByStop.num_frames = 4;
     level_1.stops[1].enemiesByStop.steps = NUMSTEPS;
     level_1.stops[1].enemiesByStop.iniposx = ENEMY_POS_X_INI;
@@ -49,7 +49,7 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[2].processed = FALSE;
     level_1.stops[2].processedEnemies = FALSE;
     level_1.stops[2].enemiesByStop.num_enemies = 4;
-    level_1.stops[2].enemiesByStop.type_enemy = TYPE_ENEMY_SQUARE;
+    level_1.stops[2].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
     level_1.stops[2].enemiesByStop.num_frames = 4;
     level_1.stops[2].enemiesByStop.steps = NUMSTEPS_1;
     level_1.stops[2].enemiesByStop.iniposx = ENEMY_POS_X_INI;

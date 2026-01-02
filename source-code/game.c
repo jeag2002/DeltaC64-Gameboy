@@ -1,5 +1,6 @@
 #include <gb/gb.h>
 #include <stdio.h>
+#include "global.h"
 #include "gamebuilder.h"
 #include "elementsbuilder.h"
 #include "background.h"
@@ -16,12 +17,16 @@ void run() {
     //END LEVEL
     BYTE END_LEVEL = FALSE;
 
+
+    
+    
     setupPlayer();
+    cleanElementData();
 
     //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END_GAME_BG && !END_GAME_FG); i++) {
     
-    //BYTE END_LEVEL = FALSE;
-    cleanElementData();
+    //BYTE END_LEVEL = FALSE;   
+    fadeout(); 
     launchLevel(LEVEL_1_IDX);
     loadElementsForLevel(LEVEL_1_IDX);
     
@@ -29,6 +34,8 @@ void run() {
 
     UINT8 enemy_timer = 0;
     UINT8 bullet_timer = 0;
+
+    fadein();
 
 
     while ((!END_GAME_BG) && (!END_GAME_FG) && (!END_LEVEL)){
@@ -64,6 +71,9 @@ void run() {
         //SET SCORE PLAYER
         setHUD(player->scores, player->lives);
     }
-    //}
-    
+
+    deleteAllContent();
+    //}    
+    deletePlayerContent();
+    clear_bkg_screen();
 }

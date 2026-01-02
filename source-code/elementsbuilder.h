@@ -95,7 +95,10 @@ void deleteContent(ElementType *element);
 //CLEAN DATA OF VRAM
 void deleteTiles(int index);
 
+//CLEAN ALL CONTENT OF A LEVEL
+void deleteAllContent();
 
-
+//CLEAN PLAYER
+void deletePlayerContent();
 
 #endif

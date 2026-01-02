@@ -1,14 +1,24 @@
-#include <gb/gb.h>
-#include <stdio.h>
-
-#include "splash.h"
-#include "game.h"
 #include "global.h"
+#include <gb/gb.h>
 
 
-/*
-//DELAY
-void performantdelay(UINT8 numloop) {
+void clear_bkg_screen() {
+    DISPLAY_OFF; 
+    HIDE_BKG; 
+
+    // Tile 0 debe ser tu tile “en blanco”
+    fill_bkg_rect(0, 0, 32, 32, 0);
+
+    SCX_REG = 0;
+    SCY_REG = 0;
+
+    SHOW_BKG;
+    DISPLAY_ON;
+}
+
+
+
+void performantGeneralDelay(UINT8 numloop) {
    UINT8 ii;
    for(ii=0; ii<numloop; ii++){
       wait_vbl_done();
@@ -32,7 +42,7 @@ void fadeout(){
              BGP_REG = 0xFF;
              break;
       }
-      performantdelay(20);
+      performantGeneralDelay(10);
 
    }
 }
@@ -51,23 +61,6 @@ void fadein(){
              BGP_REG = 0xE4;
              break;
       }
-      performantdelay(20);
+      performantGeneralDelay(10);
    }
 }
-*/
-
-
-//MAIN
-void main(){
-   while(TRUE) {
-      clear_bkg_screen();
-      processSplash();
-      run(); 
-   }
-}
-
-
-
-
-
-

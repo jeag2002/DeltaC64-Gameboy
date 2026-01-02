@@ -22,6 +22,11 @@ static UINT8 timeBetweenShoot = 0;
 
 //LOAD ELEMENT FOR LEVEL
 void loadElementsForLevel(int level) {
+    
+    currentStopFrame = 0;
+    currentEnemyFrame = 0;
+    timeBetweenShoot = 0;
+    
     background_map_2 = getLevelFromIndex(level);
     setCollBoundaries(level);
     //set elements map
@@ -318,8 +323,8 @@ void setupPlayer() {
    elements[PLAYER_ID].numFrames[3].spritids[3] = 15;
    elements[PLAYER_ID].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
      
-   setTilesElement(&elements[PLAYER_ID]);
-   moveElement(&elements[PLAYER_ID]);
+   //setTilesElement(&elements[PLAYER_ID]);
+   //moveElement(&elements[PLAYER_ID]);
 }
 
 //GET ELEMENT AT INDEX
@@ -827,4 +832,24 @@ BYTE stopScrolling(INT16 scroll_x) {
     
 
     return stopScroll;
+}
+
+
+//DELETE ALL CONTENT OF A LEVEL
+void deleteAllContent() {
+
+    for(int i=1; i<NUMELEMENTS; i++) {
+        UINT8 index_number = elements[i].current_index;
+        if (index_number != 0) { //index of PLAYER
+            deleteTiles(i);
+        }
+        deleteContent(&elements[i]);
+    }
+
+}
+
+//DELETE PLAYER
+void deletePlayerContent() {
+    deleteTiles(0);
+    deleteContent(&elements[0]);
 }
