@@ -10,7 +10,7 @@
 extern unsigned char hud_line[];
 
 INT16 getWorldScroll();
-void setHUD(UINT8 score, UINT8 lives);
+void setHUD(UINT8 score, UINT8 shoot, UINT8 lives);
 void performantDelay(UINT8 numloops);
 void launchLevel(int level);
 void incWorldScroll();

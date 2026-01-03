@@ -194,6 +194,13 @@ extern ElementType elements[NUMELEMENTS];
 ///////////////////////////////////////////////////////////////
 
 
+///COLLISION 
+///////////////////////////////////////////////////////////////
+typedef struct {
+    INT16 x;
+    INT16 y;
+    UINT8 TILE;
+} CollisionData;
 
 
 //STRUCTURE GROUP ELEMENTS

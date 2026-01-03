@@ -426,12 +426,12 @@ void moveBullets(INT16 scroll_x) {
                 } else {
 
                     INT16 world_x = elements[i].x + scroll_x; 
-                    UINT8 TILE = rightCollisionEnv(world_x, elements[i].y, elements[i].width);
+                    CollisionData *data = rightCollisionEnv(world_x, elements[i].y, elements[i].width);
 
                     //COLL AGAINST WORLD
-                    if (isCollideElement(TILE)) {
+                    if (isCollideElement(data->TILE)) {
                         //collision against other tile of the world
-                        EMU_printf("6)COLLISION bullet %d background %x",i,TILE);
+                        EMU_printf("6)COLLISION bullet %d background %x",i,data->TILE);
 
                         //deleteTiles(elements[i].current_index);
                         //currentIndex = elements[i].current_index;
@@ -587,11 +587,63 @@ void createShoot(INT16 scroll_x) {
         TYPE_SHOOT_PLAYER,
         TYPE_SHOOT_PLAYER_ONE 
         );
-    } /*else if (elements[PLAYER_ID].type_shoot == TYPE_SHOOT_PLAYER_TWO) {
+    } else if (elements[PLAYER_ID].type_shoot == TYPE_SHOOT_PLAYER_TWO) {
         //type normal x 2
+        createShootElement(
+        elements[PLAYER_ID].x + TILE_SIZE,
+        elements[PLAYER_ID].y + 2,
+        elements[PLAYER_ID].width,
+        scroll_x,
+        5,
+        TYPE_SHOOT_PLAYER,
+        TYPE_SHOOT_PLAYER_TWO
+        );
+
+        createShootElement(
+        elements[PLAYER_ID].x + TILE_SIZE,
+        elements[PLAYER_ID].y + 6,
+        elements[PLAYER_ID].width,
+        scroll_x,
+        5,
+        TYPE_SHOOT_PLAYER,
+        TYPE_SHOOT_PLAYER_TWO
+        );
+
+
     } else if (elements[PLAYER_ID].type_shoot == TYPE_SHOOT_PLAYER_THREE) {
         //type normal x 3
-    }*/ else {
+
+        createShootElement(
+        elements[PLAYER_ID].x + TILE_SIZE,
+        elements[PLAYER_ID].y + 2,
+        elements[PLAYER_ID].width,
+        scroll_x,
+        5,
+        TYPE_SHOOT_PLAYER,
+        TYPE_SHOOT_PLAYER_THREE
+        );
+
+        createShootElement(
+        elements[PLAYER_ID].x + TILE_SIZE + TILE_SIZE/2,
+        elements[PLAYER_ID].y + 4,
+        elements[PLAYER_ID].width,
+        scroll_x,
+        5,
+        TYPE_SHOOT_PLAYER,
+        TYPE_SHOOT_PLAYER_THREE
+        );
+
+        createShootElement(
+        elements[PLAYER_ID].x + TILE_SIZE,
+        elements[PLAYER_ID].y + 6,
+        elements[PLAYER_ID].width,
+        scroll_x,
+        5,
+        TYPE_SHOOT_PLAYER,
+        TYPE_SHOOT_PLAYER_THREE
+        );
+
+    } else {
         //type special
         createShootElement(
         elements[PLAYER_ID].x + TILE_SIZE,
@@ -608,7 +660,7 @@ void createShoot(INT16 scroll_x) {
 
 //TIME_SHOOT
 void timeCreateShoot(INT16 scroll_x) {
-   if (timeBetweenShoot < 2) {
+   if (timeBetweenShoot < 3) {
       EMU_printf("1)J_A press");
       timeBetweenShoot++;
    } else {
@@ -616,6 +668,47 @@ void timeCreateShoot(INT16 scroll_x) {
       createShoot(scroll_x); 
       timeBetweenShoot = 0; 
    }  
+}
+
+void clear_world_tile(INT16 tileX, INT16 tileY) {
+
+    INT8 blank = 240;
+    set_bkg_tiles(tileX, tileY-1, 1, 1, &blank);
+}
+
+UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY) {
+
+    if ((tile == TILE_SHOOT_1_1) || (tile == TILE_SHOOT_1_2) || (tile == TILE_SHOOT_1_3) || (tile == TILE_SHOOT_1_4))  {
+        EMU_printf("TILE BONUS 1 detected %x",tile);
+        elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_ONE;
+        if (tile == TILE_SHOOT_1_1) {
+           clear_world_tile(tileX, tileY);
+           clear_world_tile(tileX+1, tileY);
+           clear_world_tile(tileX, tileY+1);
+           clear_world_tile(tileX+1, tileY+1);
+        }
+        return TILE_EMPTY;
+
+    } /*else if ((tile == TILE_SHOOT_2_1) || (tile == TILE_SHOOT_2_2) || (tile == TILE_SHOOT_2_3) || (tile == TILE_SHOOT_2_4)) {
+        EMU_printf("TILE BONUS 2 detected %x",tile);
+        elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_TWO;
+        clear_world_tile(world_x, world_y); 
+        return TILE_EMPTY;
+
+    } else if ((tile == TILE_SHOOT_3_1) || (tile == TILE_SHOOT_3_2) || (tile == TILE_SHOOT_3_3) || (tile == TILE_SHOOT_3_4)) {
+        EMU_printf("TILE BONUS 3 detected %x",tile);
+        elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_THREE;
+        clear_world_tile(world_x, world_y); 
+        return TILE_EMPTY;
+
+    } else if ((tile == TILE_SHOOT_S_1) || (tile == TILE_SHOOT_S_2) || (tile == TILE_SHOOT_S_3) || (tile == TILE_SHOOT_S_4)) {
+        EMU_printf("TILE BONUS S detected %x",tile);
+        elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_SPECIAL;
+        clear_world_tile(world_x, world_y); 
+        return TILE_EMPTY;
+    }*/
+
+    return tile;
 }
 
 
@@ -632,25 +725,29 @@ UINT8 actionPlayer(INT16 scroll_x) {
 
     if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
         dx = -elements[PLAYER_ID].inc;
-        TILE = leftCollisionEnv(world_x - elements[PLAYER_ID].inc, world_y);
+        CollisionData *data = leftCollisionEnv(world_x - elements[PLAYER_ID].inc, world_y);
+        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
         //EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
     }
 
     if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
         dx = elements[PLAYER_ID].inc;
-        TILE = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
+        CollisionData *data = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
+        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
         //EMU_printf("RIGHT %hx\n",TILE);
     }
 
     if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
         dy = -elements[PLAYER_ID].inc;
-        TILE = upCollisionEnv(world_x, world_y - elements[PLAYER_ID].inc);
+        CollisionData *data = upCollisionEnv(world_x, world_y - elements[PLAYER_ID].inc);
+        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
         //EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
     }
 
     if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
         dy = elements[PLAYER_ID].inc;
-        TILE = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
+        CollisionData *data = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
+        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
         //EMU_printf("DOWN %hx\n",TILE);
     }
 
@@ -659,7 +756,8 @@ UINT8 actionPlayer(INT16 scroll_x) {
     }
 
     if (dx == 0 && dy == 0) {
-        TILE = noMoveCollisionEnv(world_x, world_y, elements[PLAYER_ID].width);
+        CollisionData *data = noMoveCollisionEnv(world_x, world_y, elements[PLAYER_ID].width);
+        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
         //EMU_printf("NOMOVE %hx\n",TILE);
     }
 
@@ -679,6 +777,7 @@ BYTE movePlayer(INT16 scroll_x) {
         show_game_over_msg();
         wait_frames_level_one(50);
         hide_msg(); 
+        
     }
     return boom;
 }
@@ -841,7 +940,7 @@ void deleteAllContent() {
     for(int i=1; i<NUMELEMENTS; i++) {
         UINT8 index_number = elements[i].current_index;
         if (index_number != 0) { //index of PLAYER
-            deleteTiles(i);
+            deleteTiles(index_number);
         }
         deleteContent(&elements[i]);
     }

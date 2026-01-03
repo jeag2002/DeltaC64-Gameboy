@@ -16,10 +16,10 @@
 INT16 scroll_x = -1;
 
 unsigned char hud_line[20] = {
-    0x1D,0x0D,0x19,0x1C,0x0F,0x00,  // SCORE
+    0x1D,0x0D,0x19,0x1C,0x0F,       // SCORE
     0x00,0x00,0x00,0x00,            // NUMBER
-    0x00,0x00,                      // SPACE
-    0x16,0x13,0x20,0x0F,0x00,0x00,  // LIVE
+    0x00,0x00,0x00,                 // SHOOT
+    0x16,0x13,0x20,0x0F,            // LIVE
     0x00,0x00,0x00                  // NUMBER
 };
 
@@ -36,9 +36,18 @@ void numberToTiles(UINT16 value, unsigned char* dest, UINT8 digits) {
 }
 
 //SET TEXT HUD
-void setHUD(UINT8 score, UINT8 lives) {
-  numberToTiles(score, &hud_line[6], 4);
-  numberToTiles(lives, &hud_line[17], 3);
+void setHUD(UINT8 score, UINT8 shoot, UINT8 lives) {
+  numberToTiles(score, &hud_line[5], 4);
+  numberToTiles(lives, &hud_line[16], 3);
+  if (shoot == TYPE_SHOOT_PLAYER_ONE) {
+     hud_line[10] = 0x02;
+  } else if (shoot == TYPE_SHOOT_PLAYER_TWO) {
+     hud_line[10] = 0x03;
+  } else if (shoot == TYPE_SHOOT_PLAYER_THREE) {
+     hud_line[10] = 0x04;
+  } else {
+     hud_line[10] = 0x1D;
+  }
   set_win_tiles(0, 0, 20, 1, hud_line);
 }
 
@@ -74,6 +83,7 @@ void launchLevel(int level) {
     set_bkg_data(0, 123, tile_background_map);
 
     //SPRITES
+    //NOTE: WE'RE WORKING WITH THE DMG-01 VERSION. ONLY 1 BANK, MAX 92 SPRITES.
     set_sprite_data(0, 92, sprites_videogame);
 
     //HUD
@@ -83,7 +93,7 @@ void launchLevel(int level) {
     font_set(min_font);
 
 
-    setHUD(0, 0);
+    setHUD(0,TYPE_SHOOT_PLAYER_ONE,0);
     move_win(7,135);
     //////////////////////////////////////////////////
  

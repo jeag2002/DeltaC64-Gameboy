@@ -17,9 +17,6 @@ void run() {
     //END LEVEL
     BYTE END_LEVEL = FALSE;
 
-
-    
-    
     setupPlayer();
     cleanElementData();
 
@@ -69,7 +66,7 @@ void run() {
         //PROCESS FRAME LEVEL. CHECK IF END
         END_LEVEL = stepLevel();
         //SET SCORE PLAYER
-        setHUD(player->scores, player->lives);
+        setHUD(player->scores, player->type_shoot, player->lives);
     }
 
     deleteAllContent();
