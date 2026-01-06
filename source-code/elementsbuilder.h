@@ -85,7 +85,7 @@ ElementType *getElement(UINT8 index);
 void loadElementsForLevel(int level);
 
 //PROCESS BONUS TILES CHANGE SHOOT
-UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY);
+UINT8 processBonusTilesBackground(UINT8 tile, INT16 tile_x, INT16 tile_y);
 
 ////////////////////// CLEAN CONTEXT ///////////////////////////////
 //SET EXPLOSIONS

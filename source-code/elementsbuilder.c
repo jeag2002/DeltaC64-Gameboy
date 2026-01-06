@@ -3,9 +3,11 @@
 #include "world.h"
 #include "collisions.h"
 #include "captions.h"
+#include "sound.h"
 #include <stdio.h>
 #include <gb/gb.h>
 #include <gb/emu_debug.h>
+
 
 #define LISTSTOPSSIZE 3
 
@@ -503,7 +505,6 @@ void moveBullets(INT16 scroll_x) {
                         }
 
                     }  
-
                     setExplosionData(i);  
 
                 } else {
@@ -516,6 +517,7 @@ void moveBullets(INT16 scroll_x) {
                         //collision against other tile of the world
                         //EMU_printf("6)COLLISION bullet %d background %x",i,data->TILE);
 
+                        play_explosion_type(0);
                         setExplosionData(i);
 
                     //OUT OF SCREEN
@@ -750,11 +752,11 @@ void clear_world_tile(INT16 tileX, INT16 tileY) {
 
     INT8 blank = 240;
     //INT8 blank = 1;
-    //set_bkg_tiles(tileX, tileY-1, 1, 1, &blank);
-    set_bkg_tiles(tileX, tileY, 1, 1, &blank);
+    set_bkg_tiles(tileX, tileY-1, 1, 1, &blank);
+    //set_bkg_tiles(tileX, tileY, 1, 1, &blank);
 }
 
-UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY) {
+UINT8 processBonusTilesBackground(UINT8 tile, INT16 tile_x, INT16 tile_y) {
 
     EMU_printf("TILE %x",tile);
 
@@ -763,10 +765,11 @@ UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY) {
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_ONE;
         
         if (tile == TILE_SHOOT_1_1) {
-           clear_world_tile(tileX, tileY);
-           clear_world_tile(tileX+1, tileY);
-           clear_world_tile(tileX, tileY+1);
-           clear_world_tile(tileX+1, tileY+1);
+           clear_world_tile(tile_x, tile_y);
+           clear_world_tile(tile_x+1, tile_y);
+           clear_world_tile(tile_x, tile_y+1);
+           clear_world_tile(tile_x+1, tile_y+1);
+           play_ding();
         }
 
         return TILE_EMPTY;
@@ -776,10 +779,11 @@ UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY) {
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_TWO;
         
         if (tile == TILE_SHOOT_2_1) {
-           clear_world_tile(tileX, tileY);
-           clear_world_tile(tileX+1, tileY);
-           clear_world_tile(tileX, tileY+1);
-           clear_world_tile(tileX+1, tileY+1);
+           clear_world_tile(tile_x, tile_y);
+           clear_world_tile(tile_x+1, tile_y);
+           clear_world_tile(tile_x, tile_y);
+           clear_world_tile(tile_x+1, tile_y+1);
+           play_ding();
         }
 
         return TILE_EMPTY;

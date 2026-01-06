@@ -24,7 +24,7 @@
 #define NR51_REG (*(volatile uint8_t*)0xFF25)
 #define NR52_REG (*(volatile uint8_t*)0xFF26)
 
-static inline void sound_power_on() {
+void sound_power_on() {
     NR52_REG |= 0x80; // encender audio
     NR50_REG = 0x77;  // volumen global L+R
     NR51_REG = 0xFF;  // todos los canales en L+R

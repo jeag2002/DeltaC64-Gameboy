@@ -4,6 +4,7 @@
 #include "gamebuilder.h"
 #include "elementsbuilder.h"
 #include "background.h"
+#include "sound.h"
 
 #define LEVEL_1_IDX 1
 #define STEP 2
@@ -18,6 +19,7 @@ void run() {
     BYTE END_LEVEL = FALSE;
 
     createPlayer();
+    sound_power_on();
     cleanElementData();
 
     //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END_GAME_BG && !END_GAME_FG); i++) {
