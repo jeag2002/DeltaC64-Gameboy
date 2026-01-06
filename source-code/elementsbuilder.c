@@ -19,6 +19,10 @@ static UINT8 currentStopFrame = 0;
 static UINT8 currentEnemyFrame = 0;
 //time between shoot
 static UINT8 timeBetweenShoot = 0;
+//flag clash player
+static BYTE clash = FALSE;
+//flag frame
+static INT8 intermitentFrame = 0;
 
 //LOAD ELEMENT FOR LEVEL
 void loadElementsForLevel(int level) {
@@ -26,13 +30,15 @@ void loadElementsForLevel(int level) {
     currentStopFrame = 0;
     currentEnemyFrame = 0;
     timeBetweenShoot = 0;
+    intermitentFrame = 0;
+    clash = FALSE;
     
     background_map_2 = getLevelFromIndex(level);
     setCollBoundaries(level);
     //set elements map
     elements_map = buildLevelEnemiesFromIndex(level);
     //num stops
-    EMU_printf("NUM stops %d", elements_map -> numstops);
+    //EMU_printf("NUM stops %d", elements_map -> numstops);
     //processEnemiesLevel();
 }
 
@@ -72,7 +78,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
    elements[index].current_index = index_id;
 
    //SET FRAMES.
-   if (type_enemy == TYPE_ENEMY_PLANET) {
+   if (elements[index].type == TYPE_ENEMY_PLANET) {
 
         elements[index].current_frame = frame_id;       //index frame
         elements[index].num_frames = NUM_FRAMES_PLAYER; //num max frames.
@@ -101,7 +107,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
         elements[index].numFrames[3].spritids[3] = 75;
         elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-   } else if (type_enemy == TYPE_ENEMY_STAR) {
+   } else if (elements[index].type == TYPE_ENEMY_STAR) {
 
         elements[index].current_frame = frame_id; //index frame
         elements[index].num_frames = 2;    //num max frames.
@@ -118,7 +124,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
         elements[index].numFrames[1].spritids[3] = 59;
         elements[index].numFrames[1].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-   } else if (type_enemy == TYPE_ENEMY_OVNI) {
+   } else if (elements[index].type == TYPE_ENEMY_OVNI) {
 
         elements[index].current_frame = frame_id;       //index frame
         elements[index].num_frames = NUM_FRAMES_PLAYER; //num max frames.
@@ -147,7 +153,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
         elements[index].numFrames[3].spritids[3] = 51;
         elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-   } else if (type_enemy == TYPE_ENEMY_SQUARE) {
+   } else if (elements[index].type == TYPE_ENEMY_SQUARE) {
 
         elements[index].current_frame = frame_id;       //index frame
         elements[index].num_frames = NUM_FRAMES_PLAYER; //num max frames.
@@ -176,7 +182,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
         elements[index].numFrames[3].spritids[3] = 91;
         elements[index].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
 
-   }
+   } 
 }
 
 //PROCESS ENEMIES 
@@ -191,7 +197,7 @@ void processEnemiesLevel(UINT8 stopFrame) {
         //num groups x stop
 
     if (stopFrame < elements_map -> numstops) {
-        EMU_printf("STOP %d enemy x group  %d", stopFrame, elements_map->stops[stopFrame].enemiesByStop.num_enemies);
+        //EMU_printf("STOP %d enemy x group  %d", stopFrame, elements_map->stops[stopFrame].enemiesByStop.num_enemies);
 
         UINT8 pos_x_enemy = elements_map->stops[stopFrame].enemiesByStop.iniposx;
         UINT8 pos_y_enemy = elements_map->stops[stopFrame].enemiesByStop.iniposy;
@@ -263,18 +269,40 @@ void setTilesElement(ElementType *element) {
 
 //MOVE ELEMENT + FRAME + TILE + ANIMATION
 void moveTileElement(UINT8 index) {
-    elements[index].current_frame++;
-    if (elements[index].current_frame >= elements[index].num_frames) {
-       elements[index].current_frame = 0;
-    }
 
-    setTilesElement(&elements[index]);
+    if (elements[index].type != TYPE_EXPLOSION) {
+        elements[index].current_frame++;
+        if (elements[index].current_frame >= elements[index].num_frames) {
+            elements[index].current_frame = 0;
+        }
+    }
+    
+    if (elements[index].type == TYPE_PLAYER) {
+        if (clash) {
+            if (intermitentFrame >= 0) {
+                EMU_printf("ACTIVATED intermitence %d",intermitentFrame);
+                if (intermitentFrame % 2 == 0) {
+                    setTilesElement(&elements[index]);
+                } else {
+                    deleteTiles(elements[index].current_index);
+                }
+                intermitentFrame--;
+            } else {
+                EMU_printf("DEACTIVATE intermitence");
+                clash = FALSE;
+            }
+        } else {
+            setTilesElement(&elements[index]);
+        }
+    } else {
+        setTilesElement(&elements[index]);
+    }
     moveElement(&elements[index]);
 }
 
 
 //INITIALIZE SHIP
-void setupPlayer() {
+void createPlayer() {
 
    elements[PLAYER_ID].disabled = FALSE;
 
@@ -299,6 +327,9 @@ void setupPlayer() {
    elements[PLAYER_ID].current_frame = 0;               //index frame
    elements[PLAYER_ID].num_frames = NUM_FRAMES_PLAYER;  //num max frames.
 
+
+   if (elements[PLAYER_ID].type == TYPE_PLAYER) {
+
    elements[PLAYER_ID].numFrames[0].spritids[0] = 0;
    elements[PLAYER_ID].numFrames[0].spritids[1] = 1;
    elements[PLAYER_ID].numFrames[0].spritids[2] = 2;
@@ -322,9 +353,7 @@ void setupPlayer() {
    elements[PLAYER_ID].numFrames[3].spritids[2] = 14;
    elements[PLAYER_ID].numFrames[3].spritids[3] = 15;
    elements[PLAYER_ID].numFrames[3].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
-     
-   //setTilesElement(&elements[PLAYER_ID]);
-   //moveElement(&elements[PLAYER_ID]);
+   } 
 }
 
 //GET ELEMENT AT INDEX
@@ -345,7 +374,7 @@ UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) {
                         elements[i].width, elements[i].height);
 
             if (crash) {
-                EMU_printf("COLLISION type %d vs %d type %d",element->type, i, elements[i].type);
+                //EMU_printf("COLLISION type %d vs %d type %d",element->type, i, elements[i].type);
                 index = i;
                 break;
             }
@@ -353,6 +382,70 @@ UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) {
     }
     return index;
 } 
+
+//ANIMATE EXPLOSION AND REMOVE ACTIVE ELEMENT.
+void processFinalAnimations() {
+
+    UINT8 deleteData[NUMELEMENTS];
+    UINT8 indexDeleteData = 0;
+    for (int k=0; k<NUMELEMENTS; k++){deleteData[k]=0;}
+
+    UINT8 moveData[NUMELEMENTS];
+    UINT8 indexMoveData = 0;
+    for (int j=0; j<NUMELEMENTS; j++){moveData[j]=0;}
+
+    for(int i=0; i<NUMELEMENTS; i++) {
+        if (elements[i].disabled == FALSE) {
+            if ((elements[i].type == TYPE_EXPLOSION)) {
+                elements[i].current_frame = elements[i].current_frame + 1;
+                if (elements[i].current_frame >= LIMIT_EXPLOSION) {
+                    deleteData[indexDeleteData] = i;
+                    indexDeleteData++; 
+                } else {
+                    moveData[indexMoveData] = i;
+                    indexMoveData++;
+                }
+            
+            }
+        }
+    } 
+
+
+    for(int a=0; a<indexDeleteData; a++) {
+        deleteTiles(elements[deleteData[a]].current_index);
+        UINT8 currentIndex = elements[deleteData[a]].current_index;
+        deleteContent(&elements[deleteData[a]]);
+        elements[deleteData[a]].current_index = currentIndex;
+    }
+
+    for (int b=0; b<indexMoveData; b++) {
+        moveTileElement(moveData[b]);
+    }   
+
+}
+
+//SET EXPLOSION DATA
+void setExplosionData(UINT8 index) {
+
+    elements[index].type = TYPE_EXPLOSION;
+    elements[index].current_frame = -1;
+    elements[index].num_frames = 2; //num max frames.
+
+    elements[index].x = elements[index].x - TILE_SIZE;
+
+    elements[index].numFrames[0].spritids[0] = 16;
+    elements[index].numFrames[0].spritids[1] = 17;
+    elements[index].numFrames[0].spritids[2] = 18;
+    elements[index].numFrames[0].spritids[3] = 19;
+    elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+
+    elements[index].numFrames[1].spritids[0] = 20;
+    elements[index].numFrames[1].spritids[1] = 21;
+    elements[index].numFrames[1].spritids[2] = 22;
+    elements[index].numFrames[1].spritids[3] = 23;
+    elements[index].numFrames[1].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
+}
+
 
 //MOVE BULLETS, DETECT COLLISIONS
 void moveBullets(INT16 scroll_x) {
@@ -379,19 +472,14 @@ void moveBullets(INT16 scroll_x) {
 
                 if (index != OVERLIMITELEMENT) {
                     //destroy bullet
-                    EMU_printf("5)COLLISION bullet %d collision %d", i, index);
+                    //EMU_printf("5)COLLISION bullet %d collision %d type %d", i, index, elements[index].type);
 
-                    //deleteTiles(elements[i].current_index);
-                    //currentIndex = elements[i].current_index;
-                    //deleteContent(&elements[i]);
-                    //elements[i].current_index = currentIndex;
-
-                    deleteData[indexDeleteData] = i;
-                    indexDeleteData++;
+                   
 
                     if ((index > PLAYER_ID) 
                         && (elements[index].type != TYPE_SHOOT_PLAYER) 
-                        && (elements[index].type != TYPE_SHOOT_ENEMY)) {
+                        && (elements[index].type != TYPE_SHOOT_ENEMY)
+                        && (elements[index].type != TYPE_EXPLOSION)) {
                         //destroy enemies/other bullets
 
                         BYTE found = FALSE;
@@ -401,27 +489,22 @@ void moveBullets(INT16 scroll_x) {
                             }
                         }
 
-                        if (!found) {
-                            deleteData[indexDeleteData] = index;
-                            indexDeleteData++;    
+                        if (!found) { 
+                            //ADD ONE TO THE SCORE OF THE PLAYER
+                            if (((elements[i].type == TYPE_SHOOT_PLAYER) 
+                            && (elements[index].type >= TYPE_ENEMY_PLANET) 
+                            && (elements[index].type <= TYPE_ENEMY_SQUARE)) || 
+                            ((elements[i].type >= TYPE_ENEMY_PLANET)
+                            && (elements[i].type <= TYPE_ENEMY_SQUARE)
+                            && (elements[index].type == TYPE_SHOOT_PLAYER))) {
+                                elements[PLAYER_ID].scores = elements[PLAYER_ID].scores + 1;
+                            }
+                            setExplosionData(index);
                         }
 
-                        //ADD ONE TO THE SCORE OF THE PLAYER
-                        if (((elements[i].type == TYPE_SHOOT_PLAYER) 
-                        && (elements[index].type >= TYPE_ENEMY_PLANET) 
-                        && (elements[index].type <= TYPE_ENEMY_SQUARE)) || 
-                        ((elements[i].type >= TYPE_ENEMY_PLANET)
-                        && (elements[i].type <= TYPE_ENEMY_SQUARE)
-                        && (elements[index].type == TYPE_SHOOT_PLAYER))) {
-                            elements[0].scores = elements[0].scores + 1;
-                        }
+                    }  
 
-
-                        //deleteTiles(elements[index].current_index);
-                        //currentIndex = elements[index].current_index;
-                        //deleteContent(&elements[index]);
-                        //elements[index].current_index = currentIndex;
-                    }    
+                    setExplosionData(i);  
 
                 } else {
 
@@ -431,34 +514,22 @@ void moveBullets(INT16 scroll_x) {
                     //COLL AGAINST WORLD
                     if (isCollideElement(data->TILE)) {
                         //collision against other tile of the world
-                        EMU_printf("6)COLLISION bullet %d background %x",i,data->TILE);
+                        //EMU_printf("6)COLLISION bullet %d background %x",i,data->TILE);
 
-                        //deleteTiles(elements[i].current_index);
-                        //currentIndex = elements[i].current_index;
-                        //deleteContent(&elements[i]);
-                        //elements[i].current_index = currentIndex;
-                        deleteData[indexDeleteData] = i;
-                        indexDeleteData++;
+                        setExplosionData(i);
 
                     //OUT OF SCREEN
                     } else if ((LIMIT_BOUNDARY_X_INF >= elements[i].x) || (elements[i].x >= LIMIT_BOUNDARY_X_SUP)) {
 
-                        EMU_printf("7)COLLISION bullet %d out of boundaries %d", i, elements[i].x);
+                        //EMU_printf("7)COLLISION bullet %d out of boundaries %d", i, elements[i].x);
                         //out of screen
-
-                        //deleteTiles(elements[i].current_index);
-                        //currentIndex = elements[i].current_index;
-                        //deleteContent(&elements[i]);
-                        //elements[i].current_index = currentIndex;
 
                         deleteData[indexDeleteData] = i;
                         indexDeleteData++;
 
 
                     } else {
-                        EMU_printf("8)bullet %d moved", i);
-                        //RENDER
-                        //moveTileElement(i);
+                        //EMU_printf("8)bullet %d moved", i);                        
                         moveData[indexMoveData] = i;
                         indexMoveData++;
                     }
@@ -490,6 +561,7 @@ void moveBullets(INT16 scroll_x) {
 //inc => velocity (+)Player / (-)Enemy
 //type => type element
 //type_shoot => subkind type element
+//frame_id => frame id for explosion.
 //index => VRAM memory position 
 void createShootInternal(UINT8 index, 
                          UINT16 x, 
@@ -499,6 +571,7 @@ void createShootInternal(UINT8 index,
                          INT8 inc, 
                          UINT8 type,
                          UINT8 type_shoot, 
+                         UINT8 frame_id,
                          UINT8 indexVRAM) {
 
    elements[index].disabled = FALSE;
@@ -521,20 +594,22 @@ void createShootInternal(UINT8 index,
    elements[index].current_frame = 0;
    elements[index].num_frames = 1;
 
-   if (type_shoot == TYPE_SHOOT_PLAYER_SPECIAL) {
+   if (elements[index].type_shoot  == TYPE_SHOOT_PLAYER_SPECIAL) {
         elements[index].numFrames[0].spritids[0] = 28;
         elements[index].numFrames[0].spritids[1] = 29;
         elements[index].numFrames[0].spritids[2] = 30;
         elements[index].numFrames[0].spritids[3] = 31;
         elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
-   } else {
+     
+   } else if ((elements[index].type_shoot  == TYPE_SHOOT_PLAYER_ONE) || (elements[index].type_shoot  == TYPE_SHOOT_PLAYER_TWO) || (elements[index].type_shoot  == TYPE_SHOOT_PLAYER_THREE)) {
         elements[index].numFrames[0].spritids[0] = 24;
         elements[index].numFrames[0].spritids[1] = 25;
         elements[index].numFrames[0].spritids[2] = 26;
         elements[index].numFrames[0].spritids[3] = 27;
         elements[index].numFrames[0].num_spritids = NUM_IMAGES_BY_FRAME_PLAYER;
-   }
-   EMU_printf("3)bullet created %d type %d type_shoot %d current_index", elements[index].type, elements[index].type_shoot, elements[index].current_index);
+  
+   } 
+   //EMU_printf("3)bullet created %d type %d type_shoot %d current_index", elements[index].type, elements[index].type_shoot, elements[index].current_index);
 }
 
 //SEARCH FREE ELEMENT SLOT FOR A NEW BULLET (MAX 20 ELEMENTS)
@@ -545,7 +620,7 @@ void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 in
     
     for(index=1; index<NUMELEMENTS; index++) {
         if (elements[index].disabled == TRUE) {
-            EMU_printf("2)bucket bullet found in %d", index);
+            //EMU_printf("2)bucket bullet found in %d", index);
             break;
         }
     }
@@ -557,7 +632,7 @@ void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 in
         }
 
         if (indexVRAM <= MAXVRAMDEFINITION) {
-            EMU_printf("2)bullet creating in %d, VRAM %d", index, indexVRAM);
+            //EMU_printf("2)bullet creating in %d, VRAM %d", index, indexVRAM);
             createShootInternal(index, 
                 x, 
                 y, 
@@ -566,9 +641,10 @@ void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 in
                 inc, 
                 type,
                 type_shoot, 
+                0,
                 indexVRAM);
         } else {
-             EMU_printf("2) Cannot create a bullet max definition %d limit %d",indexVRAM, MAXVRAMDEFINITION);
+             //EMU_printf("2) Cannot create a bullet max definition %d limit %d",indexVRAM, MAXVRAMDEFINITION);
         }
     }
 }
@@ -660,11 +736,11 @@ void createShoot(INT16 scroll_x) {
 
 //TIME_SHOOT
 void timeCreateShoot(INT16 scroll_x) {
-   if (timeBetweenShoot < 3) {
-      EMU_printf("1)J_A press");
+   if (timeBetweenShoot < 4) {
+      //EMU_printf("1)J_A press");
       timeBetweenShoot++;
    } else {
-      EMU_printf("1)J_A create shoot");
+      //EMU_printf("1)J_A create shoot");
       createShoot(scroll_x); 
       timeBetweenShoot = 0; 
    }  
@@ -673,36 +749,49 @@ void timeCreateShoot(INT16 scroll_x) {
 void clear_world_tile(INT16 tileX, INT16 tileY) {
 
     INT8 blank = 240;
-    set_bkg_tiles(tileX, tileY-1, 1, 1, &blank);
+    //INT8 blank = 1;
+    //set_bkg_tiles(tileX, tileY-1, 1, 1, &blank);
+    set_bkg_tiles(tileX, tileY, 1, 1, &blank);
 }
 
 UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY) {
 
+    EMU_printf("TILE %x",tile);
+
     if ((tile == TILE_SHOOT_1_1) || (tile == TILE_SHOOT_1_2) || (tile == TILE_SHOOT_1_3) || (tile == TILE_SHOOT_1_4))  {
         EMU_printf("TILE BONUS 1 detected %x",tile);
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_ONE;
+        
         if (tile == TILE_SHOOT_1_1) {
            clear_world_tile(tileX, tileY);
            clear_world_tile(tileX+1, tileY);
            clear_world_tile(tileX, tileY+1);
            clear_world_tile(tileX+1, tileY+1);
         }
+
         return TILE_EMPTY;
 
-    } /*else if ((tile == TILE_SHOOT_2_1) || (tile == TILE_SHOOT_2_2) || (tile == TILE_SHOOT_2_3) || (tile == TILE_SHOOT_2_4)) {
+    } else if ((tile == TILE_SHOOT_2_1) || (tile == TILE_SHOOT_2_2) || (tile == TILE_SHOOT_2_3) || (tile == TILE_SHOOT_2_4)) {
         EMU_printf("TILE BONUS 2 detected %x",tile);
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_TWO;
-        clear_world_tile(world_x, world_y); 
+        
+        if (tile == TILE_SHOOT_2_1) {
+           clear_world_tile(tileX, tileY);
+           clear_world_tile(tileX+1, tileY);
+           clear_world_tile(tileX, tileY+1);
+           clear_world_tile(tileX+1, tileY+1);
+        }
+
         return TILE_EMPTY;
 
-    } else if ((tile == TILE_SHOOT_3_1) || (tile == TILE_SHOOT_3_2) || (tile == TILE_SHOOT_3_3) || (tile == TILE_SHOOT_3_4)) {
-        EMU_printf("TILE BONUS 3 detected %x",tile);
+    } /*else if ((tile == TILE_SHOOT_3_1) || (tile == TILE_SHOOT_3_2) || (tile == TILE_SHOOT_3_3) || (tile == TILE_SHOOT_3_4)) {
+        //EMU_printf("TILE BONUS 3 detected %x",tile);
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_THREE;
         clear_world_tile(world_x, world_y); 
         return TILE_EMPTY;
 
     } else if ((tile == TILE_SHOOT_S_1) || (tile == TILE_SHOOT_S_2) || (tile == TILE_SHOOT_S_3) || (tile == TILE_SHOOT_S_4)) {
-        EMU_printf("TILE BONUS S detected %x",tile);
+        //EMU_printf("TILE BONUS S detected %x",tile);
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_SPECIAL;
         clear_world_tile(world_x, world_y); 
         return TILE_EMPTY;
@@ -767,6 +856,17 @@ UINT8 actionPlayer(INT16 scroll_x) {
     return TILE;
 }
 
+//GO BACK POSITIONS AFTER STAMP AGAINST A WALL.
+void rebootPlayer() {
+    if (!clash) {
+        elements[PLAYER_ID].x = elements[PLAYER_ID].x - TILE_SIZE;
+        intermitentFrame = 6;
+        clash = TRUE;
+        //EMU_printf("IntermitentFrame enabled %d", intermitentFrame);
+    }
+}
+
+
 //PROCESS PLAYER ACTIONS + COLLISIONS BACKGROUND
 BYTE movePlayer(INT16 scroll_x) {
     UINT8 block = actionPlayer(scroll_x);
@@ -774,9 +874,17 @@ BYTE movePlayer(INT16 scroll_x) {
     if (!boom) {
         moveTileElement(PLAYER_ID);
     } else {
-        show_game_over_msg();
-        wait_frames_level_one(50);
-        hide_msg(); 
+        elements[PLAYER_ID].lives = elements[PLAYER_ID].lives - 1;
+        if (elements[PLAYER_ID].lives >= 0) {
+            rebootPlayer();
+            boom = FALSE;
+        } else {
+            boom = TRUE;
+            setExplosionData(PLAYER_ID);
+            show_game_over_msg();
+            wait_frames_level_one(50);
+            hide_msg();
+        } 
         
     }
     return boom;
@@ -784,21 +892,29 @@ BYTE movePlayer(INT16 scroll_x) {
 
 
 //COLLIDE EVERYTHING
-BYTE collideElements() {
+BYTE collidePlayerVSElements() {
     BYTE boom = FALSE;
     UINT8 index = collideElementVSOther(&elements[PLAYER_ID], PLAYER_ID);
     if  (index != OVERLIMITELEMENT) {
-         if (elements[index].type != TYPE_SHOOT_PLAYER) {
+         if ((elements[index].type != TYPE_SHOOT_PLAYER) && (elements[index].type != TYPE_EXPLOSION)) {
             boom = TRUE;
          }
     }
 
     if (boom) {
-        show_game_over_msg();
-        wait_frames_level_one(50);
-        hide_msg(); 
+        elements[PLAYER_ID].lives = elements[PLAYER_ID].lives - 1;
+        if (elements[PLAYER_ID].lives >= 0) {
+            rebootPlayer();
+            boom = FALSE;
+        } else {
+            boom = TRUE;
+            setExplosionData(PLAYER_ID);
+            show_game_over_msg();
+            wait_frames_level_one(50);
+            hide_msg(); 
+        }
     }
-
+    
     return boom;
 }
 
@@ -859,7 +975,7 @@ void cleanEnemyDataByStop(UINT8 currentStopFrame) {
                 UINT8 current_index = elements[i].current_index;
                 deleteContent(&elements[i]);
                 elements[i].current_index = current_index;
-                EMU_printf("Delete Enemy element[%d] type enemy %d current_index %d", i, elements[i].type, elements[i].current_index);
+                //EMU_printf("Delete Enemy element[%d] type enemy %d current_index %d", i, elements[i].type, elements[i].current_index);
             }
         }
     }

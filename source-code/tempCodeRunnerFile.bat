@@ -1,1 +1,1 @@
-\level_1_tiles_2.o D:\workspace-gameboy\workspace-final-2\world.o D:\workspace-gameboy\workspace-final-2\Sprites.o
+rkspace-gameboy\workspace-final-2\main_1.gb

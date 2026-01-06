@@ -30,7 +30,7 @@ void moveEnemies();
 void moveBullets(INT16 scroll_x);
 
 //CREATE BULLET INTO ELEMENTS COLLECTION
-void createShootInternal(UINT8 index, UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc,  UINT8 type, UINT8 type_shoot, UINT8 indexVRAM);
+void createShootInternal(UINT8 index, UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc,  UINT8 type, UINT8 type_shoot, UINT8 frame_id, UINT8 indexVRAM);
 
 //FIND ELEMENT BUCKET FREE FOR A NEW BULLET INTO ELEMENTS COLLECTION
 void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc, UINT8 type, UINT8 type_shoot);
@@ -51,25 +51,22 @@ UINT8 actionPlayer(INT16 scroll_x);
 BYTE movePlayer(INT16 scroll_x);
 
 //CREATE PLAYER
-void setupPlayer();
+void createPlayer();
 
-
+//BACK MOVEMENT
+void rebootPlayer();
 /////////////////////// GENERAL TOOLS //////////////////////////////////
 
 ////////////////////////// COLLISIONS BETWEEN ELEMENTS //////////////////
 //COLLIDE PLAYER VS ENEMIES/ENEMIES SHOOTS
-BYTE collideElements();
+BYTE collidePlayerVSElements();
 
 //COLLIDE ELEMENTS VS OTHERS
 UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex);
 
-
-
 ////////////////////////// SCROLLING ////////////////////////////////
 //STOP SCROLLING
 BYTE stopScrolling(INT16 scroll_x);
-
-
 
 ///////////////////////// MANAGING TILES ///////////////////////////////
 //MOVE TILES OF A FRAME OF AN ELEMENT
@@ -90,8 +87,13 @@ void loadElementsForLevel(int level);
 //PROCESS BONUS TILES CHANGE SHOOT
 UINT8 processBonusTilesBackground(UINT8 tile, INT16 tileX, INT16 tileY);
 
-
 ////////////////////// CLEAN CONTEXT ///////////////////////////////
+//SET EXPLOSIONS
+void setExplosionData(UINT8 index);
+
+//PROCESS FINAL ANIMATIONS
+void processFinalAnimations();
+
 //CLEAN ELEMENTTYPE
 void deleteContent(ElementType *element);
 

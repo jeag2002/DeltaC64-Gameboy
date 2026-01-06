@@ -17,7 +17,7 @@ void run() {
     //END LEVEL
     BYTE END_LEVEL = FALSE;
 
-    setupPlayer();
+    createPlayer();
     cleanElementData();
 
     //for(int i = LEVEL_1_IDX; (i<=LEVEL_5_IDX && !END_GAME_BG && !END_GAME_FG); i++) {
@@ -38,35 +38,46 @@ void run() {
     while ((!END_GAME_BG) && (!END_GAME_FG) && (!END_LEVEL)){
 
         wait_vbl_done();
+        //performantGeneralDelay(2);
         
         //MOVE PLAYER. CRASH IF SOMETHING HAPPENED WHEN PLAYER INTERACT WITH THE BACKGROUND
         END_GAME_BG = movePlayer(getWorldScroll());
 
-        if (!stopScrolling(getWorldScroll())) {
-             //INC WORLD MOVEMENT
-            incWorldScroll();
-        } else {
-            //MOVE ENEMIES, EVERY 3 FRAMES.
-            if(++enemy_timer == 3) {
-                enemy_timer = 0;
-                moveEnemies();  
+        if (!END_GAME_BG) {
+
+            if (!stopScrolling(getWorldScroll())) {
+                //INC WORLD MOVEMENT
+                incWorldScroll();
+            } else {
+                //MOVE ENEMIES, EVERY 3 FRAMES.
+                if(++enemy_timer == 3) {
+                    enemy_timer = 0;
+                    moveEnemies();  
+                }
+            }
+        
+        //MOVE BULLETS
+        //if (++bullet_timer == 2) {
+        //    bullet_timer = 0;
+        //    performantDelay(STEP);
+            moveBullets(getWorldScroll());
+        //}
+
+            //REMOVE EXPLOSIONS ANIMATIONS
+            processFinalAnimations();
+
+            //CRASH IF SOMETHING HAPPENED WHEN PLAYER INTERACT WITH THE FOREGROUND
+            END_GAME_FG = collidePlayerVSElements();
+
+            if (!END_GAME_FG) {
+                //PROCESS FRAME LEVEL. CHECK IF END
+                END_LEVEL = stepLevel();
             }
         }
 
-        //CRASH IF SOMETHING HAPPENED WHEN PLAYER INTERACT WITH THE FOREGROUND
-        END_GAME_FG = collideElements();
-
-        //MOVE BULLETS
-        if (++bullet_timer == 4) {
-            bullet_timer = 0;
-            performantDelay(STEP);
-            moveBullets(getWorldScroll());
-        }
-
-        //PROCESS FRAME LEVEL. CHECK IF END
-        END_LEVEL = stepLevel();
         //SET SCORE PLAYER
         setHUD(player->scores, player->type_shoot, player->lives);
+
     }
 
     deleteAllContent();

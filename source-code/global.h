@@ -78,10 +78,10 @@
 #define TILE_SHOOT_1_4 0x3D
 
 //TILE x 2 SHOOT MODE
-#define TILE_SHOOT_2_1 0x76
-#define TILE_SHOOT_2_2 0x77
-#define TILE_SHOOT_2_3 0x78
-#define TILE_SHOOT_2_4 0x79
+#define TILE_SHOOT_2_1 0x6A
+#define TILE_SHOOT_2_2 0x6B
+#define TILE_SHOOT_2_3 0x6C
+#define TILE_SHOOT_2_4 0x6D
 
 //TILE x 3 SHOOT MODE
 #define TILE_SHOOT_3_1 0x4E
@@ -136,6 +136,7 @@
 #define TYPE_ENEMY 1
 #define TYPE_SHOOT_PLAYER 2
 #define TYPE_SHOOT_ENEMY 3
+#define TYPE_EXPLOSION 4
 
 //TYPE ENEMIES
 #define TYPE_ENEMY_PLANET 11
@@ -149,6 +150,8 @@
 #define TYPE_SHOOT_PLAYER_TWO 22       //type shoot two
 #define TYPE_SHOOT_PLAYER_THREE 23     //type shoot three
 #define TYPE_SHOOT_PLAYER_SPECIAL 24   //type shoot special
+
+#define LIMIT_EXPLOSION 2              //MAX TWO FRAMES OF EXPLOSION
 
 
 
@@ -179,7 +182,7 @@ struct Element {
     UINT8 stop_id;    
     UINT8 enemy_id;
 
-    UINT8 lives;
+    INT8 lives;
     UINT8 scores;
 
     UINT8 type_shoot;
