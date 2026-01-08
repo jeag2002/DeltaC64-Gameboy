@@ -510,7 +510,7 @@ void moveBullets(INT16 scroll_x) {
                 } else {
 
                     INT16 world_x = elements[i].x + scroll_x; 
-                    CollisionData *data = rightCollisionEnv(world_x, elements[i].y, elements[i].width);
+                    CollisionData *data = noMoveCollisionShoot(world_x, elements[i].y, elements[i].width, elements[i].type);
 
                     //COLL AGAINST WORLD
                     if (isCollideElement(data->TILE)) {
@@ -748,58 +748,56 @@ void timeCreateShoot(INT16 scroll_x) {
    }  
 }
 
-void clear_world_tile(INT16 tileX, INT16 tileY) {
+
+//CLEAN BONUS TILES IN VRAM.
+void clear_world_tiles(UINT8 tile_1, UINT8 tile_2, UINT8 tile_3, UINT8 tile_4) {
 
     INT8 blank = 240;
     //INT8 blank = 1;
-    set_bkg_tiles(tileX, tileY-1, 1, 1, &blank);
-    //set_bkg_tiles(tileX, tileY, 1, 1, &blank);
+    BYTE DONE = FALSE;
+    
+    for (int i = 0; (i < 20) && (!DONE); i++) {
+        for (int j = 0; (j < 18) && (!DONE) ; j++) {
+            UINT8 tile = get_bkg_tile_xy(i,j);
+            if ((tile == tile_1)) {
+                set_bkg_tiles(i, j, 1, 1, &blank);
+                set_bkg_tiles(i, j+1, 1, 1, &blank);
+                set_bkg_tiles(i+1, j, 1, 1, &blank);
+                set_bkg_tiles(i+1, j+1, 1, 1, &blank);
+                play_ding();
+                DONE = TRUE;
+            }
+        }
+    }
 }
 
-UINT8 processBonusTilesBackground(UINT8 tile, INT16 tile_x, INT16 tile_y) {
+///UINT8 processBonusTilesBackground(UINT8 tile, INT16 tile_x, INT16 tile_y) {
 
+//PROCESS BONUS TILES    
+UINT8 processBonusTilesBackground(UINT8 tile) {
+    
     EMU_printf("TILE %x",tile);
-
+    
     if ((tile == TILE_SHOOT_1_1) || (tile == TILE_SHOOT_1_2) || (tile == TILE_SHOOT_1_3) || (tile == TILE_SHOOT_1_4))  {
-        EMU_printf("TILE BONUS 1 detected %x",tile);
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_ONE;
-        
-        if (tile == TILE_SHOOT_1_1) {
-           clear_world_tile(tile_x, tile_y);
-           clear_world_tile(tile_x+1, tile_y);
-           clear_world_tile(tile_x, tile_y+1);
-           clear_world_tile(tile_x+1, tile_y+1);
-           play_ding();
-        }
-
+        clear_world_tiles(TILE_SHOOT_1_1, TILE_SHOOT_1_2, TILE_SHOOT_1_3, TILE_SHOOT_1_4);
         return TILE_EMPTY;
 
     } else if ((tile == TILE_SHOOT_2_1) || (tile == TILE_SHOOT_2_2) || (tile == TILE_SHOOT_2_3) || (tile == TILE_SHOOT_2_4)) {
-        EMU_printf("TILE BONUS 2 detected %x",tile);
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_TWO;
-        
-        if (tile == TILE_SHOOT_2_1) {
-           clear_world_tile(tile_x, tile_y);
-           clear_world_tile(tile_x+1, tile_y);
-           clear_world_tile(tile_x, tile_y);
-           clear_world_tile(tile_x+1, tile_y+1);
-           play_ding();
-        }
-
+        clear_world_tiles(TILE_SHOOT_2_1, TILE_SHOOT_2_2, TILE_SHOOT_2_3, TILE_SHOOT_2_4);        
         return TILE_EMPTY;
 
-    } /*else if ((tile == TILE_SHOOT_3_1) || (tile == TILE_SHOOT_3_2) || (tile == TILE_SHOOT_3_3) || (tile == TILE_SHOOT_3_4)) {
-        //EMU_printf("TILE BONUS 3 detected %x",tile);
+    } else if ((tile == TILE_SHOOT_3_1) || (tile == TILE_SHOOT_3_2) || (tile == TILE_SHOOT_3_3) || (tile == TILE_SHOOT_3_4)) {
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_THREE;
-        clear_world_tile(world_x, world_y); 
+        clear_world_tiles(TILE_SHOOT_3_1, TILE_SHOOT_3_2, TILE_SHOOT_3_3, TILE_SHOOT_3_4); 
         return TILE_EMPTY;
 
-    } else if ((tile == TILE_SHOOT_S_1) || (tile == TILE_SHOOT_S_2) || (tile == TILE_SHOOT_S_3) || (tile == TILE_SHOOT_S_4)) {
-        //EMU_printf("TILE BONUS S detected %x",tile);
+    }else if ((tile == TILE_SHOOT_S_1) || (tile == TILE_SHOOT_S_2) || (tile == TILE_SHOOT_S_3) || (tile == TILE_SHOOT_S_4)) {
         elements[PLAYER_ID].type_shoot = TYPE_SHOOT_PLAYER_SPECIAL;
-        clear_world_tile(world_x, world_y); 
+        clear_world_tiles(TILE_SHOOT_S_1, TILE_SHOOT_S_2, TILE_SHOOT_S_3, TILE_SHOOT_S_4); 
         return TILE_EMPTY;
-    }*/
+    }
 
     return tile;
 }
@@ -819,28 +817,32 @@ UINT8 actionPlayer(INT16 scroll_x) {
     if (joypad() & J_LEFT && elements[PLAYER_ID].x > LIMIT_BOUNDARY_X_INF) {
         dx = -elements[PLAYER_ID].inc;
         CollisionData *data = leftCollisionEnv(world_x - elements[PLAYER_ID].inc, world_y);
-        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        //TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        TILE = processBonusTilesBackground(data->TILE);
         //EMU_printf("LEFT (%d,%d) %hx\n",world_x - elements[PLAYER_ID].inc,world_y,TILE);
     }
 
     if (joypad() & J_RIGHT && (elements[PLAYER_ID].x + elements[PLAYER_ID].width) < LIMIT_BOUNDARY_X_SUP) {
         dx = elements[PLAYER_ID].inc;
         CollisionData *data = rightCollisionEnv(world_x + dx, world_y, elements[PLAYER_ID].width);
-        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        //TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        TILE = processBonusTilesBackground(data->TILE);
         //EMU_printf("RIGHT %hx\n",TILE);
     }
 
     if (joypad() & J_UP && elements[PLAYER_ID].y > LIMIT_BOUNDARY_Y_INF) {
         dy = -elements[PLAYER_ID].inc;
         CollisionData *data = upCollisionEnv(world_x, world_y - elements[PLAYER_ID].inc);
-        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        //TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        TILE = processBonusTilesBackground(data->TILE);
         //EMU_printf("UP (%d,%d) %hx\n",world_x, world_y - elements[PLAYER_ID].inc,TILE);
     }
 
     if (joypad() & J_DOWN && (elements[PLAYER_ID].y + elements[PLAYER_ID].height) < LIMIT_BOUNDARY_Y_SUP) {
         dy = elements[PLAYER_ID].inc;
         CollisionData *data = downCollisionEnv(world_x, world_y + dy, elements[PLAYER_ID].height);
-        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        //TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        TILE = processBonusTilesBackground(data->TILE);
         //EMU_printf("DOWN %hx\n",TILE);
     }
 
@@ -850,7 +852,7 @@ UINT8 actionPlayer(INT16 scroll_x) {
 
     if (dx == 0 && dy == 0) {
         CollisionData *data = noMoveCollisionEnv(world_x, world_y, elements[PLAYER_ID].width);
-        TILE = processBonusTilesBackground(data->TILE, data->x, data->y);
+        TILE = processBonusTilesBackground(data->TILE);
         //EMU_printf("NOMOVE %hx\n",TILE);
     }
 
@@ -864,6 +866,7 @@ UINT8 actionPlayer(INT16 scroll_x) {
 void rebootPlayer() {
     if (!clash) {
         elements[PLAYER_ID].x = elements[PLAYER_ID].x - TILE_SIZE;
+        elements[PLAYER_ID].y = elements[PLAYER_ID].y - TILE_SIZE;
         intermitentFrame = 6;
         clash = TRUE;
         //EMU_printf("IntermitentFrame enabled %d", intermitentFrame);
