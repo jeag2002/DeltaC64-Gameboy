@@ -4,4 +4,7 @@
 Port for Gameboy of the C64 classic game [DELTA](https://www.youtube.com/watch?v=AeLi01dpME0)
 
 Created by Stavros Fasoulas, Music created by Rob Hubbard, Published by Thalamus Ltd in 1987
+
 More info [HERE](https://en.wikipedia.org/wiki/Delta_(video_game))
+
+Some footage (In progress) [HERE](https://www.youtube.com/watch?v=hAuzQX3tnTQ)
