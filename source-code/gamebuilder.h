@@ -14,7 +14,5 @@ void setHUD(UINT8 score, UINT8 shoot, UINT8 lives);
 void performantDelay(UINT8 numloops);
 void launchLevel(int level);
 void incWorldScroll();
-
 BYTE stepLevel();
-
 #endif

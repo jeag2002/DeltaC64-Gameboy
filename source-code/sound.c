@@ -99,3 +99,43 @@ void play_ding() {
     NR13_REG = 0xF0;   // frecuencia baja bits
     NR14_REG = 0xC5;   // frecuencia alta bits + trigger
 }
+
+static SoundEvent requested_sound = SND_NONE;
+
+void sound_request(SoundEvent ev) {
+    // Prioridad simple: explosiones > laser > ding
+    if (requested_sound == SND_NONE ||
+        ev > requested_sound) {
+        requested_sound = ev;
+    }
+}
+
+void sound_dispatch(void) {
+    switch (requested_sound) {
+
+        case SND_LASER_A:
+            play_laser_type(0);
+            break;
+
+        case SND_LASER_B:
+            play_laser_type(1);
+            break;
+
+        case SND_EXPLOSION_A:
+            play_explosion_type(0);
+            break;
+
+        case SND_EXPLOSION_B:
+            play_explosion_type(1);
+            break;
+
+        case SND_DING:
+            play_ding();
+            break;
+
+        default:
+            break;
+    }
+
+    requested_sound = SND_NONE;
+}

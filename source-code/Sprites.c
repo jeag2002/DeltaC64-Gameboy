@@ -30,7 +30,9 @@ LL => Left Low
 RL => Right Low
 
 */
-unsigned char sprites_videogame[] =
+#include "Sprites.h"
+
+const unsigned char sprites_videogame[] =
 {
   //////////// PLAYER ///////////////////
   //FRAME-1 

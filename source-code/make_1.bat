@@ -1,6 +1,4 @@
 call D:\workspace-gameboy\workspace-final-2\clean.bat
-
-D:\workspace-gameboy\workspace-final-2\mod2gbt\mod2gbt D:\workspace-gameboy\workspace-final-2\video_demo.mod song -c 2
 D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-2\output.o D:\workspace-gameboy\workspace-final-2\output.c
 D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-2\gbt_player.o D:\workspace-gameboy\workspace-final-2\gbt_player.s
 D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-2\gbt_player_bank1.o D:\workspace-gameboy\workspace-final-2\gbt_player_bank1.s

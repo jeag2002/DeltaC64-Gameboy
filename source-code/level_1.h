@@ -20,8 +20,9 @@
 
 #define backgroundWidth 160
 #define backgroundHeight 20
-#define backgroundBank 0
+//#define backgroundBank 0
 
-extern unsigned char background_map_levelone[];
+
+extern const unsigned char background_map_levelone[];
 
 /* End of LEVEL_1.H */

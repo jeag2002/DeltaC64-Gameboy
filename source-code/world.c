@@ -1,15 +1,22 @@
 
 #include <gb/gb.h>
+#include <string.h>
 #include "global.h"
 #include "level_1.h"
 #include "Movements.h"
 
+#define MAP_W 160
+#define MAP_H 20
+
 static LevelType level_1;
+
+unsigned char background_map_cpy[MAP_W * MAP_H];
 
 //SET LEVEL FROM INDEX
 unsigned char *getLevelFromIndex(int index) {
     if (index == LEVEL_1_INDEX) {
-        return background_map_levelone;
+        memcpy(background_map_cpy, background_map_levelone, MAP_W * MAP_H); 
+        return background_map_cpy;
     } else {
         return NULL;
     }
@@ -70,4 +77,5 @@ LevelType *buildLevelEnemiesFromIndex(int index) {
         return NULL;
     }
 }
+
 

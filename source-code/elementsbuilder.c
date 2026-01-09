@@ -517,7 +517,8 @@ void moveBullets(INT16 scroll_x) {
                         //collision against other tile of the world
                         //EMU_printf("6)COLLISION bullet %d background %x",i,data->TILE);
 
-                        play_explosion_type(0);
+                        //play_explosion_type(0);
+                        sound_request(SND_EXPLOSION_A);
                         setExplosionData(i);
 
                     //OUT OF SCREEN
@@ -743,6 +744,7 @@ void timeCreateShoot(INT16 scroll_x) {
       timeBetweenShoot++;
    } else {
       //EMU_printf("1)J_A create shoot");
+      sound_request(SND_LASER_A);
       createShoot(scroll_x); 
       timeBetweenShoot = 0; 
    }  
@@ -764,7 +766,7 @@ void clear_world_tiles(UINT8 tile_1, UINT8 tile_2, UINT8 tile_3, UINT8 tile_4) {
                 set_bkg_tiles(i, j+1, 1, 1, &blank);
                 set_bkg_tiles(i+1, j, 1, 1, &blank);
                 set_bkg_tiles(i+1, j+1, 1, 1, &blank);
-                play_ding();
+                sound_request(SND_DING);
                 DONE = TRUE;
             }
         }

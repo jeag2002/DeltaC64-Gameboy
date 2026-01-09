@@ -24,8 +24,9 @@
 
 
 /* Bank of tiles. */
-#define TileLabelBank 0
+//#define TileLabelBank 0
 /* Start of tile array. */
-extern unsigned char tile_background_map[];
+
+extern const unsigned char tile_background_map[];
 
 /* End of LEVEL_1_TILES_2.H */

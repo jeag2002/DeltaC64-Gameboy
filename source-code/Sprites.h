@@ -22,10 +22,10 @@
 
 */
 
-
 /* Bank of tiles. */
-#define TileLabelBank 0
+//#define TileLabelBank 0
 /* Start of tile array. */
-extern unsigned char sprites_videogame[];
+
+extern const unsigned char sprites_videogame[];
 
 /* End of NAVE.H */

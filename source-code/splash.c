@@ -5,8 +5,22 @@
 #include <stdint.h>
 #include <string.h>
 
+/*
+#include "gbt_player.h"
+#include "output.h"
+*/
+#include "splash_map.h"
+#include "splash_tile_map.h"
+
+
+
+/*
 #include "delta_3_4_data.c"
 #include "delta_3_4_map.c"
+#include "output.c"
+*/
+
+//extern const unsigned char *song_Data[];
 
 
 #define BY_TEXT               "BY JOAN"
@@ -131,8 +145,8 @@ void processSplash() {
     HIDE_WIN;
     HIDE_SPRITES;
     
-    set_bkg_data(0, 114, delta_3_4_data);
-    set_bkg_tiles(0, 0, 20, 18, delta_3_4_map);
+    set_bkg_data(0, 114, splash_tile_map);
+    set_bkg_tiles(0, 0, 20, 18, splash_map);
 
 
     OBP0_REG = 0xE0; // 11 10 00 00  => col3 negro, col2 gris oscuro, col1 blanco, col0 blanco(transparente)
@@ -144,6 +158,18 @@ void processSplash() {
     SHOW_SPRITES;
     SPRITES_8x8;            // usamos sprites 8x8
     DISPLAY_ON;
+
+
+    //-->musica
+   
+   /*BYTE flag = 1;
+   disable_interrupts();
+   gbt_play(song_Data, 2, 7);
+   gbt_loop(flag);
+   set_interrupts(VBL_IFLAG);
+   enable_interrupts();*/
+   
+
 
     // --- 1) Cargar tu splash en BG ---
     
@@ -193,8 +219,11 @@ void processSplash() {
 
         // (Opcional) salir si se pulsa START para ir a tu siguiente pantalla
         if (joypad() & J_START) {
+            //gbt_stop();
             DONE = TRUE;
         }
+
+        //gbt_update();
     }
 
     hide_all_start_sprites();

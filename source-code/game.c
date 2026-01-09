@@ -77,6 +77,7 @@ void run() {
             }
         }
 
+        sound_dispatch();
         //SET SCORE PLAYER
         setHUD(player->scores, player->type_shoot, player->lives);
 
