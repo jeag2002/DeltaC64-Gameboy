@@ -5,6 +5,7 @@
 
  Number of Tiles   : 83
 */ 
+
 #include "splash_tile_map.h"
 
 const unsigned char splash_tile_map[] = {

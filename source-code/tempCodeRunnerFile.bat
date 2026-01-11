@@ -1,1 +1,1 @@
-tiles_2.o D:\workspace-gameboy\workspace-final-2\world.o D:\workspace-gameboy\workspace-final-2\Sprites.o
+D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc -Wa-l -Wf-ba2 -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-2\output.o D:\workspace-gameboy\workspace-final-2\output.c

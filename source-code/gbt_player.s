@@ -2,7 +2,7 @@
 ;
 ; GBT Player v2.1.2
 ;
-; Copyright (c) 2009-2018, Antonio Niño Díaz <antonio_nd@outlook.com>
+; Copyright (c) 2009-2018, Antonio Niï¿½o Dï¿½az <antonio_nd@outlook.com>
 ; All rights reserved.
 ;
 ; Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,9 @@
 
 ;-------------------------------------------------------------------------------
 
-	.area	_DATA
+	;.area	_DATA
+	;.area	_CODE_2
+	.area _CODE
 
 ;-------------------------------------------------------------------------------
 
