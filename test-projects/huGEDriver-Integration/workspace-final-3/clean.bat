@@ -1,0 +1,11 @@
+del *.asm
+del *.adb
+del *.cdb
+del *.gb
+del *.ihx
+del *.lst
+del *.map
+del *.o
+del *.sym
+del *.cdb
+del *.map

@@ -1,0 +1,1 @@
+D:\workspaces\workspaceGameBoy\gbdk-2020\emulicious\emulicious.exe -linkport 1000
