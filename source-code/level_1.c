@@ -23,6 +23,8 @@
 #define backgroundWidthLevelOne 160
 #define backgroundHeightLevelOne 20
 
+BANKREF(background_map_levelone)
+
 
 const unsigned char background_map_levelone[] = {
   0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,

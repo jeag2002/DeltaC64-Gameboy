@@ -27,7 +27,7 @@ LevelType *buildLevelEnemiesLevelOne () {
     
     level_1.id = LEVEL_1_INDEX;
     //level_1.numstops = 2;
-    level_1.numstops = 3;
+    level_1.numstops = 5;
 
     level_1.stops[0].stop = 327;
     level_1.stops[0].processed = FALSE;
@@ -51,17 +51,40 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[1].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
     level_1.stops[1].enemiesByStop.behav_enemy = movementMountainDown;
 
-    
-    level_1.stops[2].stop = 800;
+
+    level_1.stops[2].stop = 327;
     level_1.stops[2].processed = FALSE;
     level_1.stops[2].processedEnemies = FALSE;
     level_1.stops[2].enemiesByStop.num_enemies = 4;
-    level_1.stops[2].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
+    level_1.stops[2].enemiesByStop.type_enemy = TYPE_ENEMY_STAR;
     level_1.stops[2].enemiesByStop.num_frames = 4;
-    level_1.stops[2].enemiesByStop.steps = NUMSTEPS_1;
+    level_1.stops[2].enemiesByStop.steps = NUMSTEPS;
     level_1.stops[2].enemiesByStop.iniposx = ENEMY_POS_X_INI;
     level_1.stops[2].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
-    level_1.stops[2].enemiesByStop.behav_enemy = movementUpRotationDown;
+    level_1.stops[2].enemiesByStop.behav_enemy = movementShawUp;
+
+    level_1.stops[3].stop = 327;
+    level_1.stops[3].processed = FALSE;
+    level_1.stops[3].processedEnemies = FALSE;
+    level_1.stops[3].enemiesByStop.num_enemies = 4;
+    level_1.stops[3].enemiesByStop.type_enemy = TYPE_ENEMY_STAR;
+    level_1.stops[3].enemiesByStop.num_frames = 4;
+    level_1.stops[3].enemiesByStop.steps = NUMSTEPS;
+    level_1.stops[3].enemiesByStop.iniposx = ENEMY_POS_X_INI;
+    level_1.stops[3].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
+    level_1.stops[3].enemiesByStop.behav_enemy = movementShawDown;
+
+    
+    level_1.stops[4].stop = 800;
+    level_1.stops[4].processed = FALSE;
+    level_1.stops[4].processedEnemies = FALSE;
+    level_1.stops[4].enemiesByStop.num_enemies = 4;
+    level_1.stops[4].enemiesByStop.type_enemy = TYPE_ENEMY_PLANET;
+    level_1.stops[4].enemiesByStop.num_frames = 4;
+    level_1.stops[4].enemiesByStop.steps = NUMSTEPS_1;
+    level_1.stops[4].enemiesByStop.iniposx = ENEMY_POS_X_INI;
+    level_1.stops[4].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
+    level_1.stops[4].enemiesByStop.behav_enemy = movementUpRotationDown;
     
 
 

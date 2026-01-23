@@ -4,21 +4,11 @@
 #include <gb/cgb.h> 
 #include <stdint.h>
 #include <string.h>
-
-
-#include "gbt_player.h"
-#include "output.h"
 #include "splash_map.h"
 #include "splash_tile_map.h"
-#include <gb/emu_debug.h>
 
 
-
-/*
-#include "delta_3_4_data.c"
-#include "delta_3_4_map.c"
-#include "output.c"
-*/
+//extern const unsigned char *song_Data[];
 
 
 #define BY_TEXT               "BY JOAN"
@@ -136,111 +126,6 @@ void show_start_sprites(uint8_t x_px, uint8_t y_px) {
     for (uint8_t i = 0; i < START_LEN; i++) move_sprite(i, (uint8_t)(x_px + (i * 8)), y_px);
 }
 
-void processSplash(void) {
-
-    /* ================================
-       1) APAGAR PANTALLA Y LIMPIAR
-       ================================ */
-    DISPLAY_OFF;
-    HIDE_BKG;
-    HIDE_WIN;
-    HIDE_SPRITES;
-
-    SCX_REG = 0;
-    SCY_REG = 0;
-
-    /* ================================
-       2) CARGAR SPLASH
-       ================================ */
-    set_bkg_data(0, 114, splash_tile_map);
-    set_bkg_tiles(0, 0, 20, 18, splash_map);
-
-    OBP0_REG = 0xE0;
-    OBP1_REG = 0xE4;
-
-    /* ================================
-       3) AUDIO + MÚSICA (GBT)
-       ================================ */
-    /*
-    NR52_REG = 0x80;     // Audio ON
-    NR51_REG = 0xFF;     // Todos los canales
-    NR50_REG = 0x77;     // Volumen máximo
-
-    disable_interrupts();
-
-    SWITCH_ROM(2);                   // Banco donde está output.c
-    gbt_play(song_Data, 2, 7);       // Iniciar canción
-    gbt_loop(1);                     // Loop infinito
-    add_VBL(gbt_update);             // GBT se ejecuta SOLO en VBL
-
-    enable_interrupts();
-    */
-
-    /* ================================
-       4) ENCENDER PANTALLA
-       ================================ */
-    SHOW_BKG;
-    SHOW_SPRITES;
-    SPRITES_8x8;
-    DISPLAY_ON;
-
-    /* ================================
-       5) COLOCAR SPRITES "START"
-       ================================ */
-    const uint8_t tx = 8;
-    const uint8_t ty = 15;
-    const uint8_t start_x = TILE_TO_X(tx);
-    const uint8_t start_y = TILE_TO_Y(ty);
-
-    place_start_sprites(start_x, start_y);
-
-    const char* bytxt = BY_TEXT;
-    place_text_sprites(bytxt, BY_OAM_BASE,
-                       TILE_TO_X(7),
-                       TILE_TO_Y(12));
-
-    /* ================================
-       6) LOOP DEL SPLASH
-       ================================ */
-    uint8_t visible = 1;
-    uint8_t ctr = 0;
-    BOOLEAN DONE = FALSE;
-
-    while (!DONE) {
-
-        wait_vbl_done();   // sincronía total con VBL
-
-        ctr++;
-        if (ctr >= 30) {   // ~0.5s
-            ctr = 0;
-            visible = !visible;
-            if (visible) show_start_sprites(start_x, start_y);
-            else hide_start_sprites();
-        }
-
-        if (joypad() & J_START) {
-            DONE = TRUE;
-        }
-    }
-
-    /* ================================
-       7) PARAR MÚSICA LIMPIAMENTE
-       ================================ */
-    /*
-    disable_interrupts();
-
-    remove_VBL(gbt_update);   // Detener motor
-    SWITCH_ROM(2);
-    gbt_stop();
-
-    enable_interrupts();
-    */
-
-    hide_all_start_sprites();
-}
-
-
-/*
 void processSplash() {
     
     DISPLAY_OFF;
@@ -252,32 +137,19 @@ void processSplash() {
     set_bkg_tiles(0, 0, 20, 18, splash_map);
 
 
-    OBP0_REG = 0xE0; // 11 10 00 00  => col3 negro, col2 gris oscuro, col1 blanco, col0 blanco(transparente)
-    OBP1_REG = 0xE4;
+    //OBP0_REG = 0xE0; // 11 10 00 00  => col3 negro, col2 gris oscuro, col1 blanco, col0 blanco(transparente)
+    //OBP1_REG = 0xE4;
 
     // --- 2) Config de pantalla ---
                 // cambio de registros seguro
-
-
-    NR52_REG = 0x80; // Enciende el sonido
-    NR51_REG = 0xFF; // Conecta todos los canales
-    NR50_REG = 0x77; // Volumen máximo
-
-     //-->musica   
-     BYTE flag = 1;
-     set_interrupts(0); // Desactiva TODO
-     disable_interrupts();
-     SWITCH_ROM(2);
-     gbt_play(song_Data, 2, 7);
-     gbt_loop(flag);
-     set_interrupts(VBL_IFLAG);
-     enable_interrupts();
-   
     SHOW_BKG;
     SHOW_SPRITES;
     SPRITES_8x8;            // usamos sprites 8x8
     DISPLAY_ON;
-    
+
+
+    //-->musica
+
     const uint8_t tx = 8;       // columna
     const uint8_t ty = 15;      // fila
     const uint8_t start_x = TILE_TO_X(tx);
@@ -295,34 +167,28 @@ void processSplash() {
 
 
     // --- 5) Bucle + parpadeo ---
-    static uint8_t visible = 1;
-    static uint8_t ctr = 0;
+    uint8_t visible = 1;
+    uint8_t ctr = 0;
 
-    static BOOLEAN DONE = FALSE;
+    BOOLEAN DONE = FALSE;
 
     while (DONE == FALSE) {
-        // 1. Actualizar música primero
-        SWITCH_ROM(2);
-        gbt_update();
-
-        // 2. Esperar al frame
         wait_vbl_done();
-
-        // 3. Lógica de parpadeo
         ctr++;
+
+        // ~30 frames ≈ 0.5 s a 60 FPS (DMG)
         if (ctr >= 30) {
             ctr = 0;
             visible = !visible;
             if (visible) show_start_sprites(start_x, start_y);
-            else hide_start_sprites();
+            else         hide_start_sprites();
         }
 
+        // (Opcional) salir si se pulsa START para ir a tu siguiente pantalla
         if (joypad() & J_START) {
-            gbt_stop();
             DONE = TRUE;
         }
     }
 
     hide_all_start_sprites();
 }
-*/
