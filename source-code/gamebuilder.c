@@ -86,6 +86,9 @@ void launchLevel(int level) {
     //NOTE: WE'RE WORKING WITH THE DMG-01 VERSION. ONLY 1 BANK, MAX 92 SPRITES.
     set_sprite_data(0, 92, sprites_videogame);
 
+
+
+
     //HUD
     /////////////////////////////////////////////////
     font_init();
@@ -110,6 +113,12 @@ void launchLevel(int level) {
     //BACKGROUND MAP WILL CHANGE X LEVEL.
     //set_bkg_submap(0, 0, SCREEN_WIDTH_TILE, SCREEN_HEIGHT_TILE, background_map_levelone, MAP_WIDTH_TILE);
     set_bkg_submap(0, 0, SCREEN_WIDTH_TILE, SCREEN_HEIGHT_TILE, background_map, MAP_WIDTH_TILE);
+
+    //INVERSION DE COLORES (PARA VERLO MEJOR EN DISPOSITIVO!)
+    BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
+    OBP0_REG = 0x1F; // invertido de 0xE0
+    OBP1_REG = 0x1B; // invertido de 0xE4    
+
     
     //PARALLAX 
     init_background(level);
@@ -136,6 +145,12 @@ BYTE stepLevel() {
            set_bkg_submap(tile_col, 0, 1, SCREEN_HEIGHT_TILE, background_map, MAP_WIDTH_TILE);
         }
     }
+
+    //INVERSION DE COLORES (PARA VERLO MEJOR EN DISPOSITIVO!)
+    BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
+    OBP0_REG = 0x1F; // invertido de 0xE0
+    OBP1_REG = 0x1B; // invertido de 0xE4    
+
 
     process_background(scroll_x);
     move_bkg(scroll_x,0);

@@ -137,6 +137,12 @@ void processSplash() {
     set_bkg_tiles(0, 0, 20, 18, splash_map);
 
 
+    //INVERSION DE COLORES (PARA VERLO MEJOR EN DISPOSITIVO!)
+    BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
+    OBP0_REG = 0x1F; // invertido de 0xE0
+    OBP1_REG = 0x1B; // invertido de 0xE4
+
+
     //OBP0_REG = 0xE0; // 11 10 00 00  => col3 negro, col2 gris oscuro, col1 blanco, col0 blanco(transparente)
     //OBP1_REG = 0xE4;
 

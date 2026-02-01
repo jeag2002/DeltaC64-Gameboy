@@ -24,7 +24,7 @@
 #define NR51_REG (*(volatile uint8_t*)0xFF25)
 #define NR52_REG (*(volatile uint8_t*)0xFF26)
 
-#define BUFFER 20
+#define BUFFER 40
 
 static SoundEvent soundEventBuffer[BUFFER];
 int soundEventBufferInc = 0;
