@@ -24,10 +24,20 @@
 #define NR51_REG (*(volatile uint8_t*)0xFF25)
 #define NR52_REG (*(volatile uint8_t*)0xFF26)
 
+#define BUFFER 20
+
+static SoundEvent soundEventBuffer[BUFFER];
+int soundEventBufferInc = 0;
+
+
 void sound_power_on() {
     NR52_REG |= 0x80; // encender audio
     NR50_REG = 0x77;  // volumen global L+R
     NR51_REG = 0xFF;  // todos los canales en L+R
+
+    for (int i=0; i<BUFFER; i++) {
+        soundEventBuffer[i] = SND_NONE;
+    }
 }
 
 void play_laser_type(uint8_t type) {
@@ -100,42 +110,55 @@ void play_ding() {
     NR14_REG = 0xC5;   // frecuencia alta bits + trigger
 }
 
-static SoundEvent requested_sound = SND_NONE;
+//static SoundEvent requested_sound = SND_NONE;
 
 void sound_request(SoundEvent ev) {
     // Prioridad simple: explosiones > laser > ding
-    if (requested_sound == SND_NONE ||
-        ev > requested_sound) {
-        requested_sound = ev;
+    /*if (requested_sound == SND_NONE ||
+        ev > requested_sound) {*/
+    if (ev != SND_NONE) {
+        if (soundEventBufferInc < BUFFER) {
+            soundEventBuffer[soundEventBufferInc] = ev;
+            soundEventBufferInc++;
+        }
+        //requested_sound = ev;
     }
 }
 
 void sound_dispatch(void) {
-    switch (requested_sound) {
 
-        case SND_LASER_A:
-            play_laser_type(0);
-            break;
+    for (int i=0; i<soundEventBufferInc; i++) {
 
-        case SND_LASER_B:
-            play_laser_type(1);
-            break;
+        switch (soundEventBuffer[i]) {
 
-        case SND_EXPLOSION_A:
-            play_explosion_type(0);
-            break;
+            case SND_LASER_A:
+                play_laser_type(0);
+                break;
 
-        case SND_EXPLOSION_B:
-            play_explosion_type(1);
-            break;
+            case SND_LASER_B:
+                play_laser_type(1);
+                break;
 
-        case SND_DING:
-            play_ding();
-            break;
+            case SND_EXPLOSION_A:
+                play_explosion_type(0);
+                break;
 
-        default:
-            break;
+            case SND_EXPLOSION_B:
+                play_explosion_type(1);
+                break;
+
+            case SND_DING:
+                play_ding();
+                break;
+
+            default:
+                break;
+        }
+
+        soundEventBuffer[i] = SND_NONE; 
     }
 
-    requested_sound = SND_NONE;
+    soundEventBufferInc = 0;
+
+    //requested_sound = SND_NONE;
 }

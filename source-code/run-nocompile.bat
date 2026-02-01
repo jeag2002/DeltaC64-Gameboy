@@ -1,1 +1,1 @@
-D:\workspaces\workspaceGameBoy\gbdk\emu\bgb.exe D:\workspace-gameboy\workspace-final-2-original\main_1.gb
+D:\workspaces\workspaceGameBoy\gbdk\emu\bgb.exe D:\workspace-gameboy\workspace-final-nomusic\main_1.gb

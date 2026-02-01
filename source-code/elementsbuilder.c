@@ -505,6 +505,7 @@ void moveBullets(INT16 scroll_x) {
                         }
 
                     }  
+                    sound_request(SND_EXPLOSION_A);
                     setExplosionData(i);  
 
                 } else {
@@ -883,13 +884,18 @@ BYTE movePlayer(INT16 scroll_x) {
     if (!boom) {
         moveTileElement(PLAYER_ID);
     } else {
-        elements[PLAYER_ID].lives = elements[PLAYER_ID].lives - 1;
-        if (elements[PLAYER_ID].lives >= 0) {
+        
+        if (!clash) {
+            elements[PLAYER_ID].lives = elements[PLAYER_ID].lives - 1;
+        }
+
+        if (elements[PLAYER_ID].lives > 0) {
             rebootPlayer();
             boom = FALSE;
         } else {
             boom = TRUE;
             setExplosionData(PLAYER_ID);
+            sound_request(SND_EXPLOSION_A);
             show_game_over_msg();
             wait_frames_level_one(50);
             hide_msg();
