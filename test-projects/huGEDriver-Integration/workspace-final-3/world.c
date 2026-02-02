@@ -15,7 +15,13 @@ unsigned char background_map_cpy[MAP_W * MAP_H];
 //SET LEVEL FROM INDEX
 unsigned char *getLevelFromIndex(int index) {
     if (index == LEVEL_1_INDEX) {
-        memcpy(background_map_cpy, background_map_levelone, MAP_W * MAP_H); 
+        UINT8 OLD = _current_bank;
+        //BACKGROUND 
+        //SWITCH_ROM(BANK(background_map_levelone));
+        SWITCH_ROM(5);
+        memcpy(background_map_cpy, background_map_levelone, MAP_W * MAP_H);
+        SWITCH_ROM(OLD); 
+
         return background_map_cpy;
     } else {
         return NULL;

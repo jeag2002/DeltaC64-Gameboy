@@ -26,6 +26,10 @@
 //#define TileLabelBank 0
 /* Start of tile array. */
 
+#include  <gb/gb.h>
+
+BANKREF_EXTERN(sprites_videogame)
+
 extern const unsigned char sprites_videogame[];
 
 /* End of NAVE.H */

@@ -22,6 +22,12 @@
 
 */
 #include "level_1_tiles_2.h"
+#include <gb/gb.h>
+
+#pragma bank 5
+
+BANKREF(tile_background_map)
+
 
 /* Start of tile array. */
 const unsigned char tile_background_map[] =

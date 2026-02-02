@@ -79,12 +79,19 @@ void launchLevel(int level) {
     HIDE_SPRITES;
     SPRITES_8x8;
 
+    UINT8 OLD = _current_bank;
+
     //BACKGROUND 
+    //SWITCH_ROM(BANK(tile_background_map));
+    SWITCH_ROM(5);
     set_bkg_data(0, 123, tile_background_map);
 
     //SPRITES
     //NOTE: WE'RE WORKING WITH THE DMG-01 VERSION. ONLY 1 BANK, MAX 92 SPRITES.
+    SWITCH_ROM(3);
     set_sprite_data(0, 92, sprites_videogame);
+
+    SWITCH_ROM(OLD);
 
     //HUD
     /////////////////////////////////////////////////
