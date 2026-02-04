@@ -25,6 +25,8 @@ unsigned char hud_line[20] = {
 
 font_t min_font;
 unsigned char *background_map;
+unsigned char *background_tile;
+unsigned char *sprites;
 
 
 //CONVERSION VALUES FOR HUD
@@ -72,6 +74,12 @@ INT16 getWorldScroll() {
 
 //LAUNCH ENVIRONMENT
 void launchLevel(int level) {
+
+    //set background map
+    background_map = getLevelFromIndex(level);
+    background_tile = getLevelTilesFromIndex(level);
+    sprites = getSpritesFromIndex(level);
+
     DISPLAY_OFF;
 
     HIDE_BKG;
@@ -79,25 +87,23 @@ void launchLevel(int level) {
     HIDE_SPRITES;
     SPRITES_8x8;
 
-    UINT8 OLD = _current_bank;
+    //UINT8 OLD = _current_bank;
 
     //BACKGROUND 
     //SWITCH_ROM(BANK(tile_background_map));
-    SWITCH_ROM(5);
-    set_bkg_data(0, 123, tile_background_map);
-
-    //SPRITES
-    //NOTE: WE'RE WORKING WITH THE DMG-01 VERSION. ONLY 1 BANK, MAX 92 SPRITES.
-    SWITCH_ROM(3);
-    set_sprite_data(0, 92, sprites_videogame);
-
-    SWITCH_ROM(OLD);
+    //set_bkg_data(0, 123, tile_background_map);
+    //SWITCH_ROM(OLD);
 
     //HUD
     /////////////////////////////////////////////////
-    font_init();
-    min_font = font_load(font_min);
-    font_set(min_font);
+    set_sprite_data(0, 92, sprites);
+
+    set_bkg_data(0, 123, background_tile);
+    
+    //font_init(); 
+    //min_font = font_load(font_min); 
+    //font_set(min_font);
+
 
 
     setHUD(0,TYPE_SHOOT_PLAYER_ONE,0);
@@ -111,12 +117,22 @@ void launchLevel(int level) {
     SHOW_WIN;
     DISPLAY_ON; 
 
-    //set background map
-    background_map = getLevelFromIndex(level);
-
     //BACKGROUND MAP WILL CHANGE X LEVEL.
     //set_bkg_submap(0, 0, SCREEN_WIDTH_TILE, SCREEN_HEIGHT_TILE, background_map_levelone, MAP_WIDTH_TILE);
+
+    //OLD = _current_bank;
+    //SWITCH_ROM(BANK(tile_background_map));
+    //set_bkg_data(0, 123, tile_background_map);
+    //SWITCH_ROM(OLD);
+    //set_bkg_data(0, 123, background_tile);
+
     set_bkg_submap(0, 0, SCREEN_WIDTH_TILE, SCREEN_HEIGHT_TILE, background_map, MAP_WIDTH_TILE);
+
+    BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
+    OBP0_REG = 0x1F; // invertido de 0xE0
+    OBP1_REG = 0x1B; // invertido de 0xE4    
+
+
     
     //PARALLAX 
     init_background(level);
@@ -140,9 +156,17 @@ BYTE stepLevel() {
        wait_vbl_done();
        UINT16 tile_col = (scroll_x / 8) + SCREEN_WIDTH_TILE; 
        if(tile_col < MAP_WIDTH_TILE) {
+           //UINT8 OLD = _current_bank;  
+           //SWITCH_ROM(BANK(tile_background_map));
+           //set_bkg_data(0, 123, tile_background_map);
+           //SWITCH_ROM(OLD);
            set_bkg_submap(tile_col, 0, 1, SCREEN_HEIGHT_TILE, background_map, MAP_WIDTH_TILE);
         }
     }
+
+    BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
+    OBP0_REG = 0x1F; // invertido de 0xE0
+    OBP1_REG = 0x1B; // invertido de 0xE4    
 
     process_background(scroll_x);
     move_bkg(scroll_x,0);

@@ -12,4 +12,7 @@
 
 LevelType *buildLevelEnemiesFromIndex(int index);
 unsigned char *getLevelFromIndex(int index);
+unsigned char *getSpritesFromIndex(int index);
+unsigned char *getLevelTilesFromIndex(int index);
+
 #endif

@@ -1,1 +1,1 @@
-D:\workspaces\workspaceGameBoy\gbdk-2020\bin\lcc
+ace-gameboy\workspace-final-huGEMusic\main.o 

@@ -163,9 +163,12 @@ void processSplash(void) {
     SWITCH_ROM(OLD);
     EMU_printf("despues splash_map");
     
+    BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
+    OBP0_REG = 0x1F; // invertido de 0xE0
+    OBP1_REG = 0x1B; // invertido de 0xE4    
 
-    OBP0_REG = 0xE0;
-    OBP1_REG = 0xE4;
+    //OBP0_REG = 0xE0;
+    //OBP1_REG = 0xE4;
 
     // Audio ON
     NR52_REG = 0x80;
