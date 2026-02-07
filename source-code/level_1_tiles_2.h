@@ -26,6 +26,9 @@
 /* Bank of tiles. */
 //#define TileLabelBank 0
 /* Start of tile array. */
+#include <gb/gb.h>
+
+BANKREF_EXTERN(tile_background_map)
 
 extern const unsigned char tile_background_map[];
 

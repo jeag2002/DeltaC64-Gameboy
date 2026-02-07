@@ -30,7 +30,12 @@ LL => Left Low
 RL => Right Low
 
 */
+
 #include "Sprites.h"
+
+#pragma bank 3
+
+BANKREF(sprites_videogame)
 
 const unsigned char sprites_videogame[] =
 {

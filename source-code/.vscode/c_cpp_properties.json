@@ -3,9 +3,10 @@
         {
             "name": "GameBoy Test_1",
             "includePath": [
-                "D:/workspace-gameboy/workspace-final-2/**",
+                "D:/workspace-gameboy/workspace-final-3/**",
                 "D:/workspaces/workspaceGameBoy/gbdk-2020/include/**",
-                "D:/workspaces/workspaceGameBoy/gbdk-2020/include"
+                "D:/workspaces/workspaceGameBoy/gbdk-2020/include",
+                "D:/workspace-gameboy/workspace-final-3/hugedriver/include"
             ],
             "defines": [
                 "_DEBUG",

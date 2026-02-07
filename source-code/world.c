@@ -3,19 +3,69 @@
 #include <string.h>
 #include "global.h"
 #include "level_1.h"
+#include "level_1_tiles_2.h"
+#include "Sprites.h"
+
 #include "Movements.h"
 
 #define MAP_W 160
 #define MAP_H 20
 
+#define TILE_W 8
+#define TILE_H 246
+
+#define SPRITE_W 8
+#define SPRITE_H 184
+
+
 static LevelType level_1;
 
 unsigned char background_map_cpy[MAP_W * MAP_H];
 
+unsigned char background_map_cpy_tiles[TILE_W * TILE_H];
+
+unsigned char sprites_cpy[SPRITE_W * SPRITE_H];
+
+
+
+//SET SPRITES FROM INDEX
+unsigned char *getSpritesFromIndex(int index) {
+    if (index == LEVEL_1_INDEX) {
+        UINT8 OLD = _current_bank;
+        SWITCH_ROM(3);
+        memcpy(sprites_cpy, sprites_videogame, SPRITE_W * SPRITE_H);
+        SWITCH_ROM(OLD); 
+        return sprites_cpy;
+    } else {
+        return NULL;
+    }
+}
+
+
+
+//SET TILE_SET FROM INDEX
+unsigned char *getLevelTilesFromIndex(int index) {
+    if (index == LEVEL_1_INDEX) {
+        UINT8 OLD = _current_bank;
+        SWITCH_ROM(5);
+        memcpy(background_map_cpy_tiles, tile_background_map, TILE_W * TILE_H);
+        SWITCH_ROM(OLD); 
+        return background_map_cpy_tiles;
+    } else {
+        return NULL;
+    }
+}
+
 //SET LEVEL FROM INDEX
 unsigned char *getLevelFromIndex(int index) {
     if (index == LEVEL_1_INDEX) {
-        memcpy(background_map_cpy, background_map_levelone, MAP_W * MAP_H); 
+        UINT8 OLD = _current_bank;
+        //BACKGROUND 
+        //SWITCH_ROM(BANK(background_map_levelone));
+        SWITCH_ROM(5);
+        memcpy(background_map_cpy, background_map_levelone, MAP_W * MAP_H);
+        SWITCH_ROM(OLD); 
+
         return background_map_cpy;
     } else {
         return NULL;
@@ -24,7 +74,6 @@ unsigned char *getLevelFromIndex(int index) {
 
 //SET ENEMIES LEVEL ONE
 LevelType *buildLevelEnemiesLevelOne () {
-    
     level_1.id = LEVEL_1_INDEX;
     //level_1.numstops = 2;
     level_1.numstops = 5;
@@ -86,8 +135,6 @@ LevelType *buildLevelEnemiesLevelOne () {
     level_1.stops[4].enemiesByStop.iniposy = ENEMY_POS_Y_INI;
     level_1.stops[4].enemiesByStop.behav_enemy = movementUpRotationDown;
     
-
-
     return &level_1;
 }
 

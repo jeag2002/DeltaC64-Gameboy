@@ -9,102 +9,102 @@
 //////////////////////////////////// ENEMIES /////////////////////////////////
 
 //CREATE ENEMY IN THE ELEMENT COLLECTION
-void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id);
+void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id) BANKED;
 
 //SET ENEMIES DATA FROM WORLD CONFIGURATION TO LEVEL.
-void processEnemiesLevel(UINT8 currentStopFrame);
+void processEnemiesLevel(UINT8 currentStopFrame) BANKED;
 
 //CLEAN ENEMIES
-void cleanElementData();
+void cleanElementData() BANKED;
 
 //CLEAN ELEMENTS x STOP
-void cleanEnemyDataByStop(UINT8 currentStopFrame);
+void cleanEnemyDataByStop(UINT8 currentStopFrame) BANKED;
 
 //MOVE ENEMIES
-void moveEnemies();
+void moveEnemies() BANKED;
 
 
 ///////////////////////////////// BULLETS ////////////////////////////////////
 
 //MOVE BULLETS, DETECT COLLISIONS
-void moveBullets(INT16 scroll_x);
+void moveBullets(INT16 scroll_x) BANKED;
 
 //CREATE BULLET INTO ELEMENTS COLLECTION
-void createShootInternal(UINT8 index, UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc,  UINT8 type, UINT8 type_shoot, UINT8 frame_id, UINT8 indexVRAM);
+void createShootInternal(UINT8 index, UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc,  UINT8 type, UINT8 type_shoot, UINT8 frame_id, UINT8 indexVRAM) BANKED;
 
 //FIND ELEMENT BUCKET FREE FOR A NEW BULLET INTO ELEMENTS COLLECTION
-void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc, UINT8 type, UINT8 type_shoot);
+void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc, UINT8 type, UINT8 type_shoot) BANKED;
 
 //CREATE BULLET
-void createShoot(INT16 scroll_x);
+void createShoot(INT16 scroll_x) BANKED;
 
 //DEFINE A DELAY BETWEEN BULLETS
-void timeCreateShoot(INT16 scroll_x);
+void timeCreateShoot(INT16 scroll_x) BANKED;
 
 
 ///////////////////////// PLAYER /////////////////////////////////
 
 //ACTION (MOVEMENT/SHOOT) PLAYER
-UINT8 actionPlayer(INT16 scroll_x);
+UINT8 actionPlayer(INT16 scroll_x) BANKED;
 
 //MOVE PLAYER + COLLISIONS
-BYTE movePlayer(INT16 scroll_x);
+BYTE movePlayer(INT16 scroll_x) BANKED;
 
 //CREATE PLAYER
-void createPlayer();
+void createPlayer() BANKED;
 
 //BACK MOVEMENT
-void rebootPlayer();
+void rebootPlayer() BANKED;
 /////////////////////// GENERAL TOOLS //////////////////////////////////
 
 ////////////////////////// COLLISIONS BETWEEN ELEMENTS //////////////////
 //COLLIDE PLAYER VS ENEMIES/ENEMIES SHOOTS
-BYTE collidePlayerVSElements();
+BYTE collidePlayerVSElements() BANKED;
 
 //COLLIDE ELEMENTS VS OTHERS
-UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex);
+UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) BANKED;
 
 ////////////////////////// SCROLLING ////////////////////////////////
 //STOP SCROLLING
-BYTE stopScrolling(INT16 scroll_x);
+BYTE stopScrolling(INT16 scroll_x) BANKED;
 
 ///////////////////////// MANAGING TILES ///////////////////////////////
 //MOVE TILES OF A FRAME OF AN ELEMENT
-void setTilesElement(ElementType *element);
+void setTilesElement(ElementType *element) BANKED;
 
 //MOVE FRAME OF AN ELEMENT
-void moveElement(ElementType *element);
+void moveElement(ElementType *element) BANKED;
 
 //MOVE FRAME->TILES OF A ELEMENT.
-void moveTileElement(UINT8 index);
+void moveTileElement(UINT8 index) BANKED;
 
 //GET ELEMENT BY ID
-ElementType *getElement(UINT8 index);
+ElementType *getElement(UINT8 index) BANKED;
 
 //SET OTHER ELEMENTS INTO THE LEVEL.
-void loadElementsForLevel(int level);
+void loadElementsForLevel(int level) BANKED;
 
 //PROCESS BONUS TILES CHANGE SHOOT
 //UINT8 processBonusTilesBackground(UINT8 tile, INT16 tile_x, INT16 tile_y);
-UINT8 processBonusTilesBackground(UINT8 tile);
+UINT8 processBonusTilesBackground(UINT8 tile) BANKED;
 
 ////////////////////// CLEAN CONTEXT ///////////////////////////////
 //SET EXPLOSIONS
-void setExplosionData(UINT8 index);
+void setExplosionData(UINT8 index) BANKED;
 
 //PROCESS FINAL ANIMATIONS
-void processFinalAnimations();
+void processFinalAnimations() BANKED;
 
 //CLEAN ELEMENTTYPE
-void deleteContent(ElementType *element);
+void deleteContent(ElementType *element) BANKED;
 
 //CLEAN DATA OF VRAM
-void deleteTiles(int index);
+void deleteTiles(int index) BANKED;
 
 //CLEAN ALL CONTENT OF A LEVEL
-void deleteAllContent();
+void deleteAllContent() BANKED;
 
 //CLEAN PLAYER
-void deletePlayerContent();
+void deletePlayerContent() BANKED;
 
 #endif

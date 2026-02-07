@@ -4,17 +4,24 @@
 #include <gb/cgb.h> 
 #include <stdint.h>
 #include <string.h>
+
+#include "sample_song.h"
 #include "splash_map.h"
 #include "splash_tile_map.h"
-
-
-//extern const unsigned char *song_Data[];
+#include "huGEDriver.h"
+#include <gb/emu_debug.h>
 
 
 #define BY_TEXT               "BY JOAN"
 #define BY_OAM_BASE           5     // sprites 0..4 ocupados por START
 #define BY_FIRST_SPR_TILE     220   // evita solapar con otros tiles
 #define SPLASH_SPRITE_COUNT   20 
+
+#define START_FIRST_SPR_TILE  200  // índice de tile en VRAM para los sprites (evitar solapar con BG)
+#define START_LEN             5    // S,T,A,R,T
+
+#define SPLASH_BANK 4
+#define SONG_BANK   6
 
 #define SPR_PAL(p) ((_cpu == CGB_TYPE) ? ((p) & 0x07) : ((p) ? 0x10 : 0x00))
 
@@ -23,6 +30,8 @@ enum { G_SPC, G_A, G_B, G_J, G_N, G_O, G_Y, G_COUNT };
 
 // Tiles 8x8 (2bpp) para A,B,C,J,L,N,O,R,Y,Z y espacio.
 // (estilo simple; puedes afinar el arte si quieres)
+
+//#pragma bank 2
 const unsigned char BY_glyph_tiles[G_COUNT * 16] = {
     // ' ' (vacío)
     0,0,0,0,0,0,0,0,  0,0,0,0,0,0,0,0,
@@ -41,14 +50,6 @@ const unsigned char BY_glyph_tiles[G_COUNT * 16] = {
 
 };
 
-
-#define START_FIRST_SPR_TILE  200  // índice de tile en VRAM para los sprites (evitar solapar con BG)
-#define START_LEN             5    // S,T,A,R,T
-
-// Tiles 2bpp (DMG) para "S","T","A","R","T" como sprites 8x8.
-// Cada fila = (low byte, high byte). Usamos color 1 (low=1, high=0) => visible y “blanco” con paleta adecuada.
-
-
 const unsigned char START_spr_tiles[START_LEN * 16] = {
     // 'S'
     124,0,  64,0,  120,0,  4,0,  4,0,  4,0,  120,0,  0,0,
@@ -61,6 +62,15 @@ const unsigned char START_spr_tiles[START_LEN * 16] = {
     // 'T'
     124,0,  16,0,  16,0,   16,0, 16,0,  16,0, 16,0,   0,0
 };
+//#pragma bank 0
+
+
+
+// Tiles 2bpp (DMG) para "S","T","A","R","T" como sprites 8x8.
+// Cada fila = (low byte, high byte). Usamos color 1 (low=1, high=0) => visible y “blanco” con paleta adecuada.
+
+
+
 
 // Helpers para convertir coordenadas de tiles a píxeles de pantalla (zona visible GB)
 #define TILE_TO_X(tx) ((uint8_t)(8  + ((tx) << 3)))  // margen X visible empieza en 8px
@@ -82,7 +92,9 @@ uint8_t glyph_index(char c) {
 
 void place_start_sprites(uint8_t x_px, uint8_t y_px) {
     // Cargar data de sprites para START
+    //SWITCH_ROM(2);
     set_sprite_data(START_FIRST_SPR_TILE, START_LEN, START_spr_tiles);
+    //SWITCH_ROM(0);
 
     // Asignar tiles a 5 sprites consecutivos y colocarlos
     for (uint8_t i = 0; i < START_LEN; i++) {
@@ -94,7 +106,9 @@ void place_start_sprites(uint8_t x_px, uint8_t y_px) {
 
 void place_text_sprites(const char* s, uint8_t oam_base, uint8_t x_px, uint8_t y_px) {
     // cargar set de glifos
+    //SWITCH_ROM(2);
     set_sprite_data(BY_FIRST_SPR_TILE, G_COUNT, BY_glyph_tiles);
+    //SWITCH_ROM(0);
 
     uint8_t oam = oam_base;
     uint8_t x = x_px;
@@ -126,63 +140,66 @@ void show_start_sprites(uint8_t x_px, uint8_t y_px) {
     for (uint8_t i = 0; i < START_LEN; i++) move_sprite(i, (uint8_t)(x_px + (i * 8)), y_px);
 }
 
-void processSplash() {
-    
+
+void processSplash(void) {
+
+
     DISPLAY_OFF;
     HIDE_BKG;
     HIDE_WIN;
     HIDE_SPRITES;
+
+    SCX_REG = 0;
+    SCY_REG = 0;
+
+    EMU_printf("antes splash_tile");
+    UINT8 OLD = _current_bank;
+    SWITCH_ROM(BANK(splash_tile_map_title));
+    set_bkg_data(0, 114, splash_tile_map_title);
+    EMU_printf("despues splash_tile_map");
+    EMU_printf("antes splash_map");
+    SWITCH_ROM(BANK(splash_map_title));
+    set_bkg_tiles(0, 0, 20, 18, splash_map_title);
+    SWITCH_ROM(OLD);
+    EMU_printf("despues splash_map");
     
-    set_bkg_data(0, 114, splash_tile_map);
-    set_bkg_tiles(0, 0, 20, 18, splash_map);
-
-
-    //INVERSION DE COLORES (PARA VERLO MEJOR EN DISPOSITIVO!)
     BGP_REG  = 0x1B; // invertido de 0xE4 (si ese era tu BGP)
     OBP0_REG = 0x1F; // invertido de 0xE0
-    OBP1_REG = 0x1B; // invertido de 0xE4
+    OBP1_REG = 0x1B; // invertido de 0xE4    
 
-
-    //OBP0_REG = 0xE0; // 11 10 00 00  => col3 negro, col2 gris oscuro, col1 blanco, col0 blanco(transparente)
+    //OBP0_REG = 0xE0;
     //OBP1_REG = 0xE4;
 
-    // --- 2) Config de pantalla ---
-                // cambio de registros seguro
+    // Audio ON
+    NR52_REG = 0x80;
+    NR51_REG = 0xFF;
+    NR50_REG = 0x77;
+
+    OLD = _current_bank;
+    disable_interrupts();
+    SWITCH_ROM(BANK(sample_song));
+    hUGE_init(&sample_song);
+    SWITCH_ROM(OLD);
+    enable_interrupts();
+
+
     SHOW_BKG;
     SHOW_SPRITES;
-    SPRITES_8x8;            // usamos sprites 8x8
+    SPRITES_8x8;
     DISPLAY_ON;
 
-
-    //-->musica
-
-    const uint8_t tx = 8;       // columna
-    const uint8_t ty = 15;      // fila
-    const uint8_t start_x = TILE_TO_X(tx);
-    const uint8_t start_y = TILE_TO_Y(ty);
-
+    const uint8_t start_x = TILE_TO_X(8);
+    const uint8_t start_y = TILE_TO_Y(15);
     place_start_sprites(start_x, start_y);
+    place_text_sprites(BY_TEXT, BY_OAM_BASE, TILE_TO_X(7), TILE_TO_Y(12));
 
-    const char* bytxt = BY_TEXT;
-    uint8_t by_tx = 7;
-    uint8_t by_ty = 12;
-    uint8_t by_x  = TILE_TO_X(by_tx);
-    uint8_t by_y  = TILE_TO_Y(by_ty);
-
-    place_text_sprites(bytxt, BY_OAM_BASE, by_x, by_y);
-
-
-    // --- 5) Bucle + parpadeo ---
-    uint8_t visible = 1;
-    uint8_t ctr = 0;
-
+    uint8_t visible = 1, ctr = 0;
     BOOLEAN DONE = FALSE;
 
-    while (DONE == FALSE) {
+    while (!DONE) {
         wait_vbl_done();
-        ctr++;
 
-        // ~30 frames ≈ 0.5 s a 60 FPS (DMG)
+        ctr++;
         if (ctr >= 30) {
             ctr = 0;
             visible = !visible;
@@ -190,11 +207,26 @@ void processSplash() {
             else         hide_start_sprites();
         }
 
-        // (Opcional) salir si se pulsa START para ir a tu siguiente pantalla
-        if (joypad() & J_START) {
-            DONE = TRUE;
-        }
+        if (joypad() & J_START) DONE = TRUE;
+
+        OLD = _current_bank;
+        disable_interrupts();
+        SWITCH_ROM(BANK(sample_song));
+        hUGE_dosound();
+        SWITCH_ROM(OLD);
+        enable_interrupts();
     }
+
+    OLD = _current_bank;
+    disable_interrupts();
+    SWITCH_ROM(BANK(sample_song));
+    hUGE_mute_channel(HT_CH1, HT_CH_MUTE);
+    hUGE_mute_channel(HT_CH2, HT_CH_MUTE);
+    hUGE_mute_channel(HT_CH3, HT_CH_MUTE);
+    hUGE_mute_channel(HT_CH4, HT_CH_MUTE);
+    SWITCH_ROM(OLD);
+    enable_interrupts();
+
 
     hide_all_start_sprites();
 }

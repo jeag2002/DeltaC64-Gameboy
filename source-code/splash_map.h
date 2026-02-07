@@ -1,3 +1,4 @@
+#include <gb/gb.h>
 
-
-extern const unsigned char splash_map[];
+BANKREF_EXTERN(splash_map_title)
+extern const unsigned char splash_map_title[];

@@ -6,57 +6,6 @@
 #include "global.h"
 
 
-/*
-//DELAY
-void performantdelay(UINT8 numloop) {
-   UINT8 ii;
-   for(ii=0; ii<numloop; ii++){
-      wait_vbl_done();
-   }
-}
-
-//FADEOUT
-void fadeout(){
-   for(int i=0;i<4;i++){
-      switch(i){
-         case 0:
-             BGP_REG = 0xE4;
-             break;
-         case 1:
-             BGP_REG = 0xF9;
-             break;
-         case 2:
-             BGP_REG = 0xFE;
-             break;
-         case 3:
-             BGP_REG = 0xFF;
-             break;
-      }
-      performantdelay(20);
-
-   }
-}
-
-//FADEIN
-void fadein(){
-   for(int i=0;i<3;i++){
-      switch(i){
-         case 0:
-             BGP_REG = 0xFE;
-             break;
-         case 1:
-             BGP_REG = 0xF9;
-             break;
-         case 2:
-             BGP_REG = 0xE4;
-             break;
-      }
-      performantdelay(20);
-   }
-}
-*/
-
-
 //MAIN
 void main(){
    while(TRUE) {
@@ -65,9 +14,6 @@ void main(){
       run(); 
    }
 }
-
-
-
 
 
 

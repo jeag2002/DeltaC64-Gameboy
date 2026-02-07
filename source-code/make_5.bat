@@ -1,0 +1,26 @@
+call D:\workspace-gameboy\workspace-final-huGEMusic\clean.bat
+
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wf--debug -Wf-bo6 -ID:/workspace-gameboy/workspace-final-huGEMusic/hugedriver/include -c D:\workspace-gameboy\workspace-final-huGEMusic\sample_song.c -o D:\workspace-gameboy\workspace-final-huGEMusic\sample_song.o
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\global.o D:\workspace-gameboy\workspace-final-huGEMusic\global.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wf-bo4 -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\splash_map.o D:\workspace-gameboy\workspace-final-huGEMusic\splash_map.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wf-bo4 -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\splash_tile_map.o D:\workspace-gameboy\workspace-final-huGEMusic\splash_tile_map.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wf--debug -ID:/workspace-gameboy/workspace-final-huGEMusic/hugedriver/include -c D:\workspace-gameboy\workspace-final-huGEMusic\splash.c -o D:\workspace-gameboy\workspace-final-huGEMusic\splash.o
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\main.o D:\workspace-gameboy\workspace-final-huGEMusic\main.c
+
+
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -Wf-bo3 -c -o D:\workspace-gameboy\workspace-final-huGEMusic\Sprites.o D:\workspace-gameboy\workspace-final-huGEMusic\Sprites.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -Wf-bo5 -c -o D:\workspace-gameboy\workspace-final-huGEMusic\level_1_tiles_2.o D:\workspace-gameboy\workspace-final-huGEMusic\level_1_tiles_2.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -Wf-bo5 -c -o D:\workspace-gameboy\workspace-final-huGEMusic\level_1.o D:\workspace-gameboy\workspace-final-huGEMusic\level_1.c
+
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\sound.o D:\workspace-gameboy\workspace-final-huGEMusic\sound.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\world.o D:\workspace-gameboy\workspace-final-huGEMusic\world.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\captions.o D:\workspace-gameboy\workspace-final-huGEMusic\captions.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\collisions.o D:\workspace-gameboy\workspace-final-huGEMusic\collisions.c
+
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\background.o D:\workspace-gameboy\workspace-final-huGEMusic\background.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\gamebuilder.o D:\workspace-gameboy\workspace-final-huGEMusic\gamebuilder.c
+
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -Wf-bo7 -c -o D:\workspace-gameboy\workspace-final-huGEMusic\elementsbuilder.o D:\workspace-gameboy\workspace-final-huGEMusic\elementsbuilder.c
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -c -o D:\workspace-gameboy\workspace-final-huGEMusic\game.o D:\workspace-gameboy\workspace-final-huGEMusic\game.c
+
+D:\workspaces\workspaceGameBoy\gbdk-2020-1\bin\lcc -msm83:gb -Wa-l -Wl-m -Wf--debug -Wl-y -Wl-w -Wl-yt0x01 -Wl-yo8 -Wl-ya0 -ID:/workspace-gameboy/workspace-final-huGEMusic/hugedriver/include -Wl-lD:/workspace-gameboy/workspace-final-huGEMusic/hugedriver/gbdk/hUGEDriver.lib -o D:\workspace-gameboy\workspace-final-huGEMusic\main_1.gb D:\workspace-gameboy\workspace-final-huGEMusic\sample_song.o D:\workspace-gameboy\workspace-final-huGEMusic\global.o D:\workspace-gameboy\workspace-final-huGEMusic\splash_map.o D:\workspace-gameboy\workspace-final-huGEMusic\splash_tile_map.o D:\workspace-gameboy\workspace-final-huGEMusic\splash.o D:\workspace-gameboy\workspace-final-huGEMusic\Sprites.o D:\workspace-gameboy\workspace-final-huGEMusic\level_1_tiles_2.o D:\workspace-gameboy\workspace-final-huGEMusic\level_1.o D:\workspace-gameboy\workspace-final-huGEMusic\sound.o D:\workspace-gameboy\workspace-final-huGEMusic\world.o D:\workspace-gameboy\workspace-final-huGEMusic\captions.o D:\workspace-gameboy\workspace-final-huGEMusic\collisions.o D:\workspace-gameboy\workspace-final-huGEMusic\background.o D:\workspace-gameboy\workspace-final-huGEMusic\gamebuilder.o D:\workspace-gameboy\workspace-final-huGEMusic\elementsbuilder.o D:\workspace-gameboy\workspace-final-huGEMusic\game.o D:\workspace-gameboy\workspace-final-huGEMusic\main.o

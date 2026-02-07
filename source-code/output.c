@@ -1,7 +1,10 @@
 
 // File created by mod2gbt
+#include <gb/gb.h>
 
-#pragma bank=2
+#pragma bank 6
+
+BANKREF(song_Data)
 
 const unsigned char song0[] = {
   0x98,0x2f, 0x00, 0x8c,0x14, 0x88,0x0f,

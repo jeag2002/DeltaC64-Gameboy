@@ -8,6 +8,7 @@
 #include <gb/gb.h>
 #include <gb/emu_debug.h>
 
+#pragma bank 7
 
 #define LISTSTOPSSIZE 3
 
@@ -27,7 +28,7 @@ static BYTE clash = FALSE;
 static INT8 intermitentFrame = 0;
 
 //LOAD ELEMENT FOR LEVEL
-void loadElementsForLevel(int level) {
+void loadElementsForLevel(int level) BANKED {
     
     currentStopFrame = 0;
     currentEnemyFrame = 0;
@@ -54,7 +55,7 @@ void loadElementsForLevel(int level) {
 //type_enemy => kind of enemy
 //index_id => first VRAM index
 //frame_id => first frame.
-void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id) {
+void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  int enemy, int type_enemy, int index_id, int frame_id) BANKED {
 
    elements[index].disabled = FALSE;
 
@@ -190,7 +191,7 @@ void createEnemyElement(int index, int pos_x_enemy, int pos_y_enemy, int stop,  
 //PROCESS ENEMIES 
 //Note: we can charge the data in this way, because there are no so many enemies by level (MAX 19 elements)
 //more than 40 this way would be too ineficcient O(n^2)
-void processEnemiesLevel(UINT8 stopFrame) {
+void processEnemiesLevel(UINT8 stopFrame) BANKED {
 
     UINT8 index_id = 4;
     UINT8 numElements = 1;
@@ -234,7 +235,7 @@ void processEnemiesLevel(UINT8 stopFrame) {
 
 
 //MOVE FRAME DISPLACEMENT+ANIMATION
-void moveElement(ElementType *element) {
+void moveElement(ElementType *element) BANKED {
    
    UINT8 frame_idx = element->current_frame;
    UINT8 num_ids = element->numFrames[frame_idx].num_spritids;
@@ -258,7 +259,7 @@ void moveElement(ElementType *element) {
 }
 
 //CHANGE SPRITE ANIMATION IN VRAM
-void setTilesElement(ElementType *element) {
+void setTilesElement(ElementType *element) BANKED {
 
    UINT8 frame_idx = element->current_frame;
    UINT8 num_ids = element->numFrames[frame_idx].num_spritids;
@@ -270,7 +271,7 @@ void setTilesElement(ElementType *element) {
 }
 
 //MOVE ELEMENT + FRAME + TILE + ANIMATION
-void moveTileElement(UINT8 index) {
+void moveTileElement(UINT8 index) BANKED {
 
     if (elements[index].type != TYPE_EXPLOSION) {
         elements[index].current_frame++;
@@ -304,7 +305,7 @@ void moveTileElement(UINT8 index) {
 
 
 //INITIALIZE SHIP
-void createPlayer() {
+void createPlayer() BANKED {
 
    elements[PLAYER_ID].disabled = FALSE;
 
@@ -359,13 +360,13 @@ void createPlayer() {
 }
 
 //GET ELEMENT AT INDEX
-ElementType *getElement(UINT8 index) {
+ElementType *getElement(UINT8 index) BANKED {
     return &elements[index];
 }
 
 
 //PROCESS PLAYER COLLISION AGAINST FOREGROUND (ENEMIES + BULLETS) 
-UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) {
+UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) BANKED {
     UINT8 index = OVERLIMITELEMENT;    
     BYTE crash = FALSE;
     for(int i=0; i<NUMELEMENTS; i++) {
@@ -386,7 +387,7 @@ UINT8 collideElementVSOther(ElementType *element, UINT8 currentIndex) {
 } 
 
 //ANIMATE EXPLOSION AND REMOVE ACTIVE ELEMENT.
-void processFinalAnimations() {
+void processFinalAnimations() BANKED {
 
     UINT8 deleteData[NUMELEMENTS];
     UINT8 indexDeleteData = 0;
@@ -427,7 +428,7 @@ void processFinalAnimations() {
 }
 
 //SET EXPLOSION DATA
-void setExplosionData(UINT8 index) {
+void setExplosionData(UINT8 index) BANKED {
 
     elements[index].type = TYPE_EXPLOSION;
     elements[index].current_frame = -1;
@@ -450,7 +451,7 @@ void setExplosionData(UINT8 index) {
 
 
 //MOVE BULLETS, DETECT COLLISIONS
-void moveBullets(INT16 scroll_x) {
+void moveBullets(INT16 scroll_x) BANKED {
 
     UINT8 currentIndex = 0;
 
@@ -576,7 +577,7 @@ void createShootInternal(UINT8 index,
                          UINT8 type,
                          UINT8 type_shoot, 
                          UINT8 frame_id,
-                         UINT8 indexVRAM) {
+                         UINT8 indexVRAM) BANKED {
 
    elements[index].disabled = FALSE;
 
@@ -617,7 +618,7 @@ void createShootInternal(UINT8 index,
 }
 
 //SEARCH FREE ELEMENT SLOT FOR A NEW BULLET (MAX 20 ELEMENTS)
-void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc, UINT8 type, UINT8 type_shoot) {
+void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 inc, UINT8 type, UINT8 type_shoot) BANKED {
     
     BYTE DONE = FALSE;
     UINT8 index = 0;
@@ -654,7 +655,7 @@ void createShootElement(UINT16 x, UINT16 y, UINT8 width, INT16 scroll_x, INT8 in
 }
 
 //CREATE SHOOT
-void createShoot(INT16 scroll_x) {
+void createShoot(INT16 scroll_x) BANKED {
 
     if (elements[PLAYER_ID].type_shoot == TYPE_SHOOT_PLAYER_ONE) {
         //type normal x 1
@@ -739,7 +740,7 @@ void createShoot(INT16 scroll_x) {
 
 
 //TIME_SHOOT
-void timeCreateShoot(INT16 scroll_x) {
+void timeCreateShoot(INT16 scroll_x) BANKED {
    if (timeBetweenShoot < 4) {
       //EMU_printf("1)J_A press");
       timeBetweenShoot++;
@@ -753,7 +754,7 @@ void timeCreateShoot(INT16 scroll_x) {
 
 
 //CLEAN BONUS TILES IN VRAM.
-void clear_world_tiles(UINT8 tile_1, UINT8 tile_2, UINT8 tile_3, UINT8 tile_4) {
+void clear_world_tiles(UINT8 tile_1, UINT8 tile_2, UINT8 tile_3, UINT8 tile_4) BANKED {
 
     INT8 blank = 240;
     //INT8 blank = 1;
@@ -777,7 +778,7 @@ void clear_world_tiles(UINT8 tile_1, UINT8 tile_2, UINT8 tile_3, UINT8 tile_4) {
 ///UINT8 processBonusTilesBackground(UINT8 tile, INT16 tile_x, INT16 tile_y) {
 
 //PROCESS BONUS TILES    
-UINT8 processBonusTilesBackground(UINT8 tile) {
+UINT8 processBonusTilesBackground(UINT8 tile) BANKED {
     
     EMU_printf("TILE %x",tile);
     
@@ -807,7 +808,7 @@ UINT8 processBonusTilesBackground(UINT8 tile) {
 
 
 //PLAYER ACTIONS (MOVEMENTS + SHOOT + COLLISIONS)
-UINT8 actionPlayer(INT16 scroll_x) {
+UINT8 actionPlayer(INT16 scroll_x) BANKED {
 
     UINT16 world_x = elements[PLAYER_ID].x + scroll_x;
     UINT16 world_y = elements[PLAYER_ID].y;
@@ -866,7 +867,7 @@ UINT8 actionPlayer(INT16 scroll_x) {
 }
 
 //GO BACK POSITIONS AFTER STAMP AGAINST A WALL.
-void rebootPlayer() {
+void rebootPlayer() BANKED  {
     if (!clash) {
         elements[PLAYER_ID].x = elements[PLAYER_ID].x - TILE_SIZE;
         elements[PLAYER_ID].y = elements[PLAYER_ID].y - TILE_SIZE;
@@ -878,7 +879,7 @@ void rebootPlayer() {
 
 
 //PROCESS PLAYER ACTIONS + COLLISIONS BACKGROUND
-BYTE movePlayer(INT16 scroll_x) {
+BYTE movePlayer(INT16 scroll_x) BANKED {
     UINT8 block = actionPlayer(scroll_x);
     BYTE boom = isCollideElement(block);
     if (!boom) {
@@ -907,7 +908,7 @@ BYTE movePlayer(INT16 scroll_x) {
 
 
 //COLLIDE EVERYTHING
-BYTE collidePlayerVSElements() {
+BYTE collidePlayerVSElements() BANKED {
     BYTE boom = FALSE;
     UINT8 index = collideElementVSOther(&elements[PLAYER_ID], PLAYER_ID);
     if  (index != OVERLIMITELEMENT) {
@@ -934,7 +935,7 @@ BYTE collidePlayerVSElements() {
 }
 
 //CLEAN ELEMENTS 
-void deleteContent(ElementType *element) {
+void deleteContent(ElementType *element) BANKED {
 
     element->disabled = TRUE;  
     element->x = 0;
@@ -965,7 +966,7 @@ void deleteContent(ElementType *element) {
 }
 
 //CLEAN DATA OF VRAM
-void deleteTiles(int index) {
+void deleteTiles(int index) BANKED {
 
    move_sprite(index, 0, 0);
    move_sprite(index+1, 0, 0);
@@ -979,7 +980,7 @@ void deleteTiles(int index) {
 }
 
 //CLEAN ELEMENTS x STOP
-void cleanEnemyDataByStop(UINT8 currentStopFrame) {
+void cleanEnemyDataByStop(UINT8 currentStopFrame) BANKED {
 
     for(int i=1; i<NUMELEMENTS; i++) {
         //type enemy
@@ -997,7 +998,7 @@ void cleanEnemyDataByStop(UINT8 currentStopFrame) {
 }
 
 //PROCESS ENEMIES
-void moveEnemies() {
+void moveEnemies() BANKED {
     
     MovementType *movements = elements_map->stops[currentStopFrame].enemiesByStop.behav_enemy;
     Coordinate *coords;
@@ -1030,14 +1031,14 @@ void moveEnemies() {
 
 
 //INITIALIZE_EVERYTHING
-void cleanElementData()  {
+void cleanElementData()  BANKED {
    for (int index = 1; index<NUMELEMENTS; index++) {
         deleteContent(&elements[index]);
    }
 }
 
 //STOP SCROLLING
-BYTE stopScrolling(INT16 scroll_x) {
+BYTE stopScrolling(INT16 scroll_x) BANKED {
     BYTE stopScroll = FALSE;
     
     if (scroll_x < 0) {
@@ -1066,7 +1067,7 @@ BYTE stopScrolling(INT16 scroll_x) {
 
 
 //DELETE ALL CONTENT OF A LEVEL
-void deleteAllContent() {
+void deleteAllContent() BANKED {
 
     for(int i=1; i<NUMELEMENTS; i++) {
         UINT8 index_number = elements[i].current_index;
@@ -1079,7 +1080,7 @@ void deleteAllContent() {
 }
 
 //DELETE PLAYER
-void deletePlayerContent() {
+void deletePlayerContent() BANKED {
     deleteTiles(0);
     deleteContent(&elements[0]);
 }

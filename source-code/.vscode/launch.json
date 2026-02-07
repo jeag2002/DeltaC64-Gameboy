@@ -9,7 +9,7 @@
             "request": "launch",
             "preLaunchTask": "gbdk linker Test_1",
             "name": "Test_1 GB",
-            "program": "D:/workspace-gameboy/workspace-final-2/main_1.gb",
+            "program": "D:/workspace-gameboy/workspace-final-3/main_1.gb",
             "port": 1000,
             "stopOnEntry": true
         }

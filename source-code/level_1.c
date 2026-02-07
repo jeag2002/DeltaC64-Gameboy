@@ -19,9 +19,14 @@
 */
 #include "level_1.h"
 #include <gbdk/platform.h>
+#include <gb/gb.h>
 
 #define backgroundWidthLevelOne 160
 #define backgroundHeightLevelOne 20
+
+#pragma bank 5
+
+BANKREF(background_map_levelone)
 
 const unsigned char background_map_levelone[] = {
   0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,0x7A,

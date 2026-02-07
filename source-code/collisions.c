@@ -71,6 +71,7 @@ CollisionData *getTileAtWorld(UINT16 world_x, UINT16 world_y, UINT8 type) {
     UINT16 wx = (world_x >> 3) - 1;
     UINT16 wy = (world_y >> 3) - 2;
 
+
     returnData.x = wx;
     returnData.y = wy;
     returnData.TILE = background_map_3[wy * MAP_WIDTH_TILE + wx];

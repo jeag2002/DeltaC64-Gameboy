@@ -1,3 +1,13 @@
+///MUSICA:
+
+https://www.elotrolado.net/hilo_desarrollo-software-proyectos-de-darkryoga_1901847_s100#p1737424265 
+
+https://www.skylyrac.net/p/gbt-player-usage/
+
+
+
+
+
 
 //////////////////////////////////////  CONEXION SERIAL ////////////////////////
 void debug_putc(char c) {

@@ -13,11 +13,11 @@
                 "-Wl-w",
                 "-c",
                 "-o",
-                "D:/workspace-gameboy/workspace-final-2/main.o",
-                "D:/workspace-gameboy/workspace-final-2/**.c"
+                "D:/workspace-gameboy/workspace-final-3/main.o",
+                "D:/workspace-gameboy/workspace-final-3/**.c"
             ],
             "options": {
-                "cwd": "D:/workspace-gameboy/workspace-final-2"
+                "cwd": "D:/workspace-gameboy/workspace-final-3"
             },
             "group": "build",
             "detail": "compiler: D:/workspaces/workspaceGameBoy/gbdk-2020/bin/lcc"
@@ -33,20 +33,20 @@
                 "-Wl-y",
                 "-Wl-w",
                 "-o",
-                "D:/workspace-gameboy/workspace-final-2/main_1.gb",
-                "D:/workspace-gameboy/workspace-final-2/main.o",
-                "D:/workspace-gameboy/workspace-final-2/splash.o",
-                "D:/workspace-gameboy/workspace-final-2/game.o",
-                "D:/workspace-gameboy/workspace-final-2/elementsbuilder.o",
-                "D:/workspace-gameboy/workspace-final-2/background.o",
-                "D:/workspace-gameboy/workspace-final-2/captions.o",
-                "D:/workspace-gameboy/workspace-final-2/gamebuilder.o",
-                "D:/workspace-gameboy/workspace-final-2/level_1.o", 
-                "D:/workspace-gameboy/workspace-final-2/level_1_tiles_2.o", 
-                "D:/workspace-gameboy/workspace-final-2/Sprites.o"
+                "D:/workspace-gameboy/workspace-final-3/main_1.gb",
+                "D:/workspace-gameboy/workspace-final-3/main.o",
+                "D:/workspace-gameboy/workspace-final-3/splash.o",
+                "D:/workspace-gameboy/workspace-final-3/game.o",
+                "D:/workspace-gameboy/workspace-final-3/elementsbuilder.o",
+                "D:/workspace-gameboy/workspace-final-3/background.o",
+                "D:/workspace-gameboy/workspace-final-3/captions.o",
+                "D:/workspace-gameboy/workspace-final-3/gamebuilder.o",
+                "D:/workspace-gameboy/workspace-final-3/level_1.o", 
+                "D:/workspace-gameboy/workspace-final-3/level_1_tiles_2.o", 
+                "D:/workspace-gameboy/workspace-final-3/Sprites.o"
             ],
             "options": {
-                "cwd": "D:/workspace-gameboy/workspace-final-2"
+                "cwd": "D:/workspace-gameboy/workspace-final-3"
             },
             "group": "build",
             "dependsOn": [
