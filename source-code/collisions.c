@@ -69,8 +69,10 @@ CollisionData *getTileAtWorld(UINT16 world_x, UINT16 world_y, UINT8 type) {
     CollisionData returnData;
     
     UINT16 wx = (world_x >> 3) - 1;
-    UINT16 wy = (world_y >> 3) - 2;
-
+    
+    //UINT16 wy = (world_y >> 3) - 2;
+    //SEEMS COLLISION SOMETIMES WORKS BETTER IN THIS WAY
+    UINT16 wy = (world_y >> 3) - 1;
 
     returnData.x = wx;
     returnData.y = wy;
