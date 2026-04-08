@@ -8,3 +8,5 @@ Created by Stavros Fasoulas, Music created by Rob Hubbard, Published by Thalamus
 More info [HERE](https://en.wikipedia.org/wiki/Delta_(video_game))
 
 Some footage (In progress) [HERE](https://www.youtube.com/watch?v=hAuzQX3tnTQ)
+
+Some footage (In progress )Newer version [HERE](https://youtu.be/7VQ-Yug_Oxo) 
